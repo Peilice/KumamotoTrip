@@ -1,0 +1,5 @@
+# 設計過程的暫存檔（預覽圖、審查截圖、選擇頁紀錄）
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/config.local.json
