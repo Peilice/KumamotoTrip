@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-08T00:00:00+08:00",
+  "generatedAt": "2026-10-08T14:15:39+08:00",
   "title": "Design System: 熊本・阿蘇・由布院・別府 行程網站",
   "extensions": {
     "colorMeta": {
       "white": {
         "role": "neutral",
-        "displayName": "White 白底",
+        "displayName": "白",
         "tonalRamp": [
           "#2A2622",
           "#3E3831",
@@ -118,225 +118,345 @@
       },
       "day-1-chip": {
         "role": "primary",
-        "displayName": "Day 1 苔（chip）",
+        "displayName": "Day 1 苔（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#32371F",
+          "#404A26",
           "#4F5E2C",
-          "#5F7036",
-          "#EDEFE3"
+          "#848E6B",
+          "#B0B7A0",
+          "#D3D7CA",
+          "#EAECE6",
+          "#F6F7F4"
         ]
       },
       "day-1-deep": {
         "role": "primary",
-        "displayName": "Day 1 苔（deep）",
+        "displayName": "Day 1 苔（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#32371F",
+          "#404A26",
           "#4F5E2C",
-          "#5F7036",
-          "#EDEFE3"
+          "#848E6B",
+          "#B0B7A0",
+          "#D3D7CA",
+          "#EAECE6",
+          "#F6F7F4"
         ]
       },
       "day-1-soft": {
         "role": "primary",
-        "displayName": "Day 1 苔（soft）",
+        "displayName": "Day 1 苔（soft・淡底塊）",
         "tonalRamp": [
+          "#32371F",
+          "#404A26",
           "#4F5E2C",
-          "#5F7036",
-          "#EDEFE3"
+          "#848E6B",
+          "#B0B7A0",
+          "#D3D7CA",
+          "#EAECE6",
+          "#F6F7F4"
         ]
       },
       "day-2-chip": {
         "role": "primary",
-        "displayName": "Day 2 鶯（chip）",
+        "displayName": "Day 2 鶯（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#373B21",
+          "#495028",
           "#5B6630",
-          "#6E7A3A",
-          "#EEEFE2"
+          "#8C946E",
+          "#B5BAA2",
+          "#D6D9CB",
+          "#EBEDE6",
+          "#F7F7F5"
         ]
       },
       "day-2-deep": {
         "role": "primary",
-        "displayName": "Day 2 鶯（deep）",
+        "displayName": "Day 2 鶯（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#373B21",
+          "#495028",
           "#5B6630",
-          "#6E7A3A",
-          "#EEEFE2"
+          "#8C946E",
+          "#B5BAA2",
+          "#D6D9CB",
+          "#EBEDE6",
+          "#F7F7F5"
         ]
       },
       "day-2-soft": {
         "role": "primary",
-        "displayName": "Day 2 鶯（soft）",
+        "displayName": "Day 2 鶯（soft・淡底塊）",
         "tonalRamp": [
+          "#373B21",
+          "#495028",
           "#5B6630",
-          "#6E7A3A",
-          "#EEEFE2"
+          "#8C946E",
+          "#B5BAA2",
+          "#D6D9CB",
+          "#EBEDE6",
+          "#F7F7F5"
         ]
       },
       "day-3-chip": {
         "role": "primary",
-        "displayName": "Day 3 海松茶（chip）",
+        "displayName": "Day 3 海松茶（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#3E391F",
+          "#544E26",
           "#6A622D",
-          "#7D7436",
-          "#F1EFE1"
+          "#97916C",
+          "#BCB8A0",
+          "#DAD8CA",
+          "#EDECE6",
+          "#F8F7F4"
         ]
       },
       "day-3-deep": {
         "role": "primary",
-        "displayName": "Day 3 海松茶（deep）",
+        "displayName": "Day 3 海松茶（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#3E391F",
+          "#544E26",
           "#6A622D",
-          "#7D7436",
-          "#F1EFE1"
+          "#97916C",
+          "#BCB8A0",
+          "#DAD8CA",
+          "#EDECE6",
+          "#F8F7F4"
         ]
       },
       "day-3-soft": {
         "role": "primary",
-        "displayName": "Day 3 海松茶（soft）",
+        "displayName": "Day 3 海松茶（soft・淡底塊）",
         "tonalRamp": [
+          "#3E391F",
+          "#544E26",
           "#6A622D",
-          "#7D7436",
-          "#F1EFE1"
+          "#97916C",
+          "#BCB8A0",
+          "#DAD8CA",
+          "#EDECE6",
+          "#F8F7F4"
         ]
       },
       "day-4-chip": {
         "role": "primary",
-        "displayName": "Day 4 黃土（chip）",
+        "displayName": "Day 4 黃土（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#45341F",
+          "#604626",
           "#7A582D",
-          "#8F6936",
-          "#F3ECE2"
+          "#A28A6C",
+          "#C3B4A0",
+          "#DED5CA",
+          "#EFEBE6",
+          "#F8F7F4"
         ]
       },
       "day-4-deep": {
         "role": "primary",
-        "displayName": "Day 4 黃土（deep）",
+        "displayName": "Day 4 黃土（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#45341F",
+          "#604626",
           "#7A582D",
-          "#8F6936",
-          "#F3ECE2"
+          "#A28A6C",
+          "#C3B4A0",
+          "#DED5CA",
+          "#EFEBE6",
+          "#F8F7F4"
         ]
       },
       "day-4-soft": {
         "role": "primary",
-        "displayName": "Day 4 黃土（soft）",
+        "displayName": "Day 4 黃土（soft・淡底塊）",
         "tonalRamp": [
+          "#45341F",
+          "#604626",
           "#7A582D",
-          "#8F6936",
-          "#F3ECE2"
+          "#A28A6C",
+          "#C3B4A0",
+          "#DED5CA",
+          "#EFEBE6",
+          "#F8F7F4"
         ]
       },
       "day-5-chip": {
         "role": "primary",
-        "displayName": "Day 5 柿渋（chip）",
+        "displayName": "Day 5 柿渋（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#432C1E",
+          "#5C3924",
           "#76462B",
-          "#8E5534",
-          "#F3E8E2"
+          "#9F7E6B",
+          "#C1ACA0",
+          "#DDD1CA",
+          "#EFE9E6",
+          "#F8F6F4"
         ]
       },
       "day-5-deep": {
         "role": "primary",
-        "displayName": "Day 5 柿渋（deep）",
+        "displayName": "Day 5 柿渋（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#432C1E",
+          "#5C3924",
           "#76462B",
-          "#8E5534",
-          "#F3E8E2"
+          "#9F7E6B",
+          "#C1ACA0",
+          "#DDD1CA",
+          "#EFE9E6",
+          "#F8F6F4"
         ]
       },
       "day-5-soft": {
         "role": "primary",
-        "displayName": "Day 5 柿渋（soft）",
+        "displayName": "Day 5 柿渋（soft・淡底塊）",
         "tonalRamp": [
+          "#432C1E",
+          "#5C3924",
           "#76462B",
-          "#8E5534",
-          "#F3E8E2"
+          "#9F7E6B",
+          "#C1ACA0",
+          "#DDD1CA",
+          "#EFE9E6",
+          "#F8F6F4"
         ]
       },
       "day-6-chip": {
         "role": "primary",
-        "displayName": "Day 6 弁柄（chip）",
+        "displayName": "Day 6 弁柄（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#40261F",
+          "#573026",
           "#6E392D",
-          "#844536",
-          "#F2E5E2"
+          "#9A746C",
+          "#BEA6A0",
+          "#DBCECA",
+          "#EEE7E6",
+          "#F8F5F4"
         ]
       },
       "day-6-deep": {
         "role": "primary",
-        "displayName": "Day 6 弁柄（deep）",
+        "displayName": "Day 6 弁柄（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#40261F",
+          "#573026",
           "#6E392D",
-          "#844536",
-          "#F2E5E2"
+          "#9A746C",
+          "#BEA6A0",
+          "#DBCECA",
+          "#EEE7E6",
+          "#F8F5F4"
         ]
       },
       "day-6-soft": {
         "role": "primary",
-        "displayName": "Day 6 弁柄（soft）",
+        "displayName": "Day 6 弁柄（soft・淡底塊）",
         "tonalRamp": [
+          "#40261F",
+          "#573026",
           "#6E392D",
-          "#844536",
-          "#F2E5E2"
+          "#9A746C",
+          "#BEA6A0",
+          "#DBCECA",
+          "#EEE7E6",
+          "#F8F5F4"
         ]
       },
       "day-7-chip": {
         "role": "primary",
-        "displayName": "Day 7 蘇芳（chip）",
+        "displayName": "Day 7 蘇芳（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#3A2223",
+          "#4E282C",
           "#612F35",
-          "#74393F",
-          "#F0E3E4"
+          "#906D72",
+          "#B8A1A4",
+          "#D8CBCC",
+          "#ECE6E7",
+          "#F7F5F5"
         ]
       },
       "day-7-deep": {
         "role": "primary",
-        "displayName": "Day 7 蘇芳（deep）",
+        "displayName": "Day 7 蘇芳（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#3A2223",
+          "#4E282C",
           "#612F35",
-          "#74393F",
-          "#F0E3E4"
+          "#906D72",
+          "#B8A1A4",
+          "#D8CBCC",
+          "#ECE6E7",
+          "#F7F5F5"
         ]
       },
       "day-7-soft": {
         "role": "primary",
-        "displayName": "Day 7 蘇芳（soft）",
+        "displayName": "Day 7 蘇芳（soft・淡底塊）",
         "tonalRamp": [
+          "#3A2223",
+          "#4E282C",
           "#612F35",
-          "#74393F",
-          "#F0E3E4"
+          "#906D72",
+          "#B8A1A4",
+          "#D8CBCC",
+          "#ECE6E7",
+          "#F7F5F5"
         ]
       },
       "day-8-chip": {
         "role": "primary",
-        "displayName": "Day 8 葡萄鼠（chip）",
+        "displayName": "Day 8 葡萄鼠（chip・日期鈕與整條色階）",
         "tonalRamp": [
+          "#302329",
+          "#3E2A36",
           "#4C3143",
-          "#5C3B50",
-          "#EDE4EA"
+          "#826F7B",
+          "#AEA2AA",
+          "#D2CCD0",
+          "#EAE6E8",
+          "#F6F5F6"
         ]
       },
       "day-8-deep": {
         "role": "primary",
-        "displayName": "Day 8 葡萄鼠（deep）",
+        "displayName": "Day 8 葡萄鼠（deep・頁首、按鈕、路線）",
         "tonalRamp": [
+          "#302329",
+          "#3E2A36",
           "#4C3143",
-          "#5C3B50",
-          "#EDE4EA"
+          "#826F7B",
+          "#AEA2AA",
+          "#D2CCD0",
+          "#EAE6E8",
+          "#F6F5F6"
         ]
       },
       "day-8-soft": {
         "role": "primary",
-        "displayName": "Day 8 葡萄鼠（soft）",
+        "displayName": "Day 8 葡萄鼠（soft・淡底塊）",
         "tonalRamp": [
+          "#302329",
+          "#3E2A36",
           "#4C3143",
-          "#5C3B50",
-          "#EDE4EA"
+          "#826F7B",
+          "#AEA2AA",
+          "#D2CCD0",
+          "#EAE6E8",
+          "#F6F5F6"
         ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "當日路線大標，箭頭用日色。"
+        "purpose": "當日路線大標，ink 字、日色箭頭，坐在當日漸層的淡段。"
       },
       "masthead": {
         "displayName": "Masthead",
@@ -348,11 +468,15 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "景點名、住宿名、方塊標題。"
+        "purpose": "景點名、住宿名、資訊方塊標題。"
       },
       "numeral": {
         "displayName": "Numeral",
-        "purpose": "航班時刻、氣溫等大型等寬數字。"
+        "purpose": "航班與租車時刻等大型數字。"
+      },
+      "numeral-lead": {
+        "displayName": "Numeral Lead",
+        "purpose": "只給氣候方塊的氣溫，全站最大的數字。"
       },
       "body": {
         "displayName": "Body",
@@ -375,29 +499,29 @@
       {
         "name": "ring-selected",
         "value": "0 0 0 2px #FFFFFF, 0 0 0 4.5px #2A2622",
-        "purpose": "選中日期鈕的白內圈＋墨外框（環，不是陰影）。"
+        "purpose": "選中日期鈕的白內圈＋墨外框（環，不是投影）。"
       },
       {
         "name": "ring-badge",
         "value": "0 0 0 2px #FFFFFF",
-        "purpose": "景點編號徽章外的白圈，把徽章從照片切開。"
+        "purpose": "景點編號徽章外的白圈，把徽章從照片上切開。"
       }
     ],
     "motion": [
       {
         "name": "ease",
         "value": "cubic-bezier(.16, 1, .3, 1)",
-        "purpose": "所有轉場的緩動。"
+        "purpose": "全站緩動。"
       },
       {
         "name": "day-shift",
-        "value": "background-color .6s / stroke .6s",
-        "purpose": "換日時頁首與今日地圖路段轉色。"
+        "value": "--day / --day-soft .6s（@property 註冊為 <color>，過渡掛在根元素）",
+        "purpose": "換日時頁首、當日漸層、路線、按鈕一起轉色。"
       },
       {
         "name": "rise",
         "value": ".45s, opacity .4→1, translateY 6px→0",
-        "purpose": "換日時景點清單淡入（僅 no-preference）。"
+        "purpose": "換日時景點清單淡入上移。"
       },
       {
         "name": "chevron",
@@ -405,9 +529,14 @@
         "purpose": "展開箭頭旋轉 180°。"
       },
       {
+        "name": "meter-front",
+        "value": ".7s brightness pulse, 每格延遲 70ms",
+        "purpose": "行前清單勾滿時 8 格色階依序亮一下。"
+      },
+      {
         "name": "reduced-motion",
         "value": "transition: none",
-        "purpose": "prefers-reduced-motion: reduce 時關閉頁首與路段轉色。"
+        "purpose": "prefers-reduced-motion: reduce 時關閉轉色與動畫。"
       }
     ],
     "breakpoints": [
@@ -446,7 +575,7 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "日色膠囊主按鈕，如「導航」。",
+      "description": "主要動作（導航）：日色 deep 底、白字膠囊，hover 轉墨色。",
       "html": "<button class=\"ds-btn ds-btn--day\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 11l18-8-8 18-2-8-8-2z\"/></svg>導航</button>",
       "css": ".ds-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:99px;font:700 14.5px/1 var(--round,\"Zen Maru\",sans-serif);border:1.5px solid #E8E2D8;color:#2A2622;background:#fff;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}.ds-btn--day{background:var(--day,#4F5E2C);border-color:var(--day,#4F5E2C);color:#fff}.ds-btn--day:hover{background:#2A2622;border-color:#2A2622}.ds-btn:focus-visible{outline:3px solid #2A2622;outline-offset:2px}"
     },
@@ -454,78 +583,86 @@
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "白底外框膠囊，如「撥打電話」。",
+      "description": "次要動作（撥打電話）：白底、砂線外框，hover 外框轉墨色。",
       "html": "<button class=\"ds-btn-o\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2\"/></svg>撥打電話</button>",
       "css": ".ds-btn-o{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:99px;font:700 14.5px/1 var(--round,\"Zen Maru\",sans-serif);border:1.5px solid #E8E2D8;color:#2A2622;background:#fff;cursor:pointer;transition:border-color .2s}.ds-btn-o:hover{border-color:#2A2622}.ds-btn-o:focus-visible{outline:3px solid #2A2622;outline-offset:2px}"
     },
     {
-      "name": "Day Strip",
+      "name": "Day Strip + Day Gradient",
       "kind": "nav",
       "refersTo": "day-chip",
-      "description": "8 格和風沉穩色階日期鈕（白字），選中者加墨環。",
-      "html": "<div class=\"ds-days\"><button class=\"ds-day\" style=\"--c:#5F7036;--ci:#FFFFFF\"><b>1</b><small>11/24</small></button><button class=\"ds-day is-on\" style=\"--c:#6E7A3A;--ci:#FFFFFF\"><b>2</b><small>11/25</small></button><button class=\"ds-day\" style=\"--c:#7D7436;--ci:#FFFFFF\"><b>3</b><small>11/26</small></button><button class=\"ds-day\" style=\"--c:#8F6936;--ci:#FFFFFF\"><b>4</b><small>11/27</small></button><button class=\"ds-day\" style=\"--c:#8E5534;--ci:#FFFFFF\"><b>5</b><small>11/28</small></button><button class=\"ds-day\" style=\"--c:#844536;--ci:#FFFFFF\"><b>6</b><small>11/29</small></button><button class=\"ds-day\" style=\"--c:#74393F;--ci:#FFFFFF\"><b>7</b><small>11/30</small></button><button class=\"ds-day\" style=\"--c:#5C3B50;--ci:#FFFFFF\"><b>8</b><small>12/01</small></button></div>",
-      "css": ".ds-days{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.ds-day{appearance:none;border:0;background:var(--c);color:var(--ci);border-radius:8px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1)}.ds-day b{font:900 21px/1 var(--round,\"Zen Maru\",sans-serif)}.ds-day small{font-size:10.5px;font-weight:700;opacity:.85}.ds-day:hover{transform:translateY(-2px)}.ds-day.is-on{box-shadow:0 0 0 2px #fff,0 0 0 4.5px #2A2622}.ds-day:focus-visible{outline:3px solid #2A2622;outline-offset:2px}"
+      "description": "8 格和色日期鈕坐在當日漸層的濃段，往下淡回白底，大標與小地圖坐在淡段。",
+      "html": "<div class=\"ds-band\" style=\"--day:#5B6630;--soft:#EEEFE2\"><div class=\"ds-days\"><button class=\"ds-day\" style=\"--c:#5F7036\"><b>1</b><small>11/24</small></button><button class=\"ds-day is-on\" style=\"--c:#6E7A3A\"><b>2</b><small>11/25</small></button><button class=\"ds-day\" style=\"--c:#7D7436\"><b>3</b><small>11/26</small></button><button class=\"ds-day\" style=\"--c:#8F6936\"><b>4</b><small>11/27</small></button><button class=\"ds-day\" style=\"--c:#8E5534\"><b>5</b><small>11/28</small></button><button class=\"ds-day\" style=\"--c:#844536\"><b>6</b><small>11/29</small></button><button class=\"ds-day\" style=\"--c:#74393F\"><b>7</b><small>11/30</small></button><button class=\"ds-day\" style=\"--c:#5C3B50\"><b>8</b><small>12/01</small></button></div><div class=\"ds-head\"><h2>阿蘇<span>→</span>高千穗</h2><p>11/25（三）</p></div></div>",
+      "css": ".ds-band{background:linear-gradient(var(--day),color-mix(in srgb,var(--day) 62%,var(--soft)) 22%,var(--soft) 58%,#fff);padding:16px 16px 24px}.ds-days{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.ds-day{appearance:none;border:0;background:var(--c);color:#fff;border-radius:8px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1)}.ds-day b{font:900 21px/1 \"Zen Maru\",\"Noto Sans TC\",sans-serif}.ds-day small{font-size:10.5px;font-weight:700;opacity:.85}.ds-day:hover{transform:translateY(-2px)}.ds-day.is-on{box-shadow:0 0 0 2px #fff,0 0 0 4.5px #2A2622}.ds-day:focus-visible{outline:3px solid #2A2622;outline-offset:2px}.ds-head{padding-top:32px}.ds-head h2{margin:0;font:900 clamp(32px,9.6vw,60px)/1.15 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#2A2622}.ds-head h2 span{color:var(--day);margin:0 .2em;font-weight:700}.ds-head p{margin:8px 0 0;font:700 14px/1.4 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#3E3831}"
     },
     {
-      "name": "Chips",
-      "kind": "chip",
-      "refersTo": "chip-day",
-      "description": "日色膠囊、安靜膠囊與虛線「待填」。",
-      "html": "<span class=\"ds-chip\">Day 2・鶯</span> <span class=\"ds-chip ds-chip--quiet\">阿蘇 住宿</span> <span class=\"ds-todo\">待填</span>",
-      "css": ".ds-chip{display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;background:var(--day-soft,#EDEFE3);color:var(--day,#4F5E2C);font:700 12.5px/1.2 var(--round,\"Zen Maru\",sans-serif)}.ds-chip--quiet{background:#F3EFEA;color:#3E3831}.ds-todo{display:inline-block;padding:0 10px;border:1.5px dashed #A79F94;border-radius:99px;color:#6B6258;font-size:12px;line-height:1.75;font-weight:700}"
-    },
-    {
-      "name": "Stop Row",
+      "name": "Stop List with Route Spine",
       "kind": "custom",
       "refersTo": "stop-photo",
-      "description": "2px 墨線下的景點列：圓角小照片、日色編號、車程靠右。",
-      "html": "<ol class=\"ds-stops\"><li class=\"ds-stop\"><span class=\"ds-stop__img\"><span class=\"ds-stop__ph\"></span><span class=\"ds-stop__n\">1</span></span><span class=\"ds-stop__t\"><b>白川水源</b></span><span class=\"ds-stop__mv\">車程 30 分</span></li><li class=\"ds-stop\"><span class=\"ds-stop__img\"><span class=\"ds-stop__ph\"></span><span class=\"ds-stop__n\">2</span></span><span class=\"ds-stop__t\"><b>高千穗神社</b></span><span class=\"ds-stop__mv\">車程 75 分</span></li></ol>",
-      "css": ".ds-stops{list-style:none;margin:0;padding:0;border-top:2px solid #2A2622}.ds-stop{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;min-height:76px;border-bottom:1px solid #E8E2D8}.ds-stop__img{position:relative;width:56px;height:56px}.ds-stop__ph{display:block;width:56px;height:56px;border-radius:12px;background:#A79F94}.ds-stop__n{position:absolute;left:-5px;top:-5px;min-width:22px;height:22px;border-radius:99px;background:var(--day,#4F5E2C);color:#fff;font:900 12px/22px var(--round,\"Zen Maru\",sans-serif);text-align:center;box-shadow:0 0 0 2px #fff}.ds-stop__t b{font:900 17px/1.35 var(--round,\"Zen Maru\",sans-serif)}.ds-stop:hover .ds-stop__t b{color:var(--day,#4F5E2C)}.ds-stop__mv{font-size:12.5px;font-weight:700;color:var(--day,#4F5E2C);white-space:nowrap;font-variant-numeric:tabular-nums}"
+      "description": "景點清單：2px 日色路線脊線穿過每站照片，車程膠囊掛在兩站交界、對齊景點名。",
+      "html": "<ol class=\"ds-stops\" style=\"--day:#5B6630;--soft:#EEEFE2\"><li><span class=\"ds-img ds-img--icon\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 6v13M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6\"/><circle cx=\"7\" cy=\"11.5\" r=\"2\"/></svg></span><span><b>熊本阿蘇萬楓酒店</b><small>出發</small></span></li><li class=\"leg\"><span class=\"ds-leg\"><svg viewBox=\"0 0 24 24\" width=\"15\" height=\"15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 16v-3.5L6 7.5A2 2 0 0 1 7.9 6h8.2A2 2 0 0 1 18 7.5l2 5V16\"/><path d=\"M3 16h18v2.5H3z\"/><circle cx=\"7\" cy=\"19\" r=\"1.8\"/><circle cx=\"17\" cy=\"19\" r=\"1.8\"/></svg>車程 30 分</span><span class=\"ds-img\"><i>1</i></span><span><b>白川水源</b><small>MAPCODE <em>256 251 468*43</em></small></span></li><li class=\"leg\"><span class=\"ds-leg\"><svg viewBox=\"0 0 24 24\" width=\"15\" height=\"15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 16v-3.5L6 7.5A2 2 0 0 1 7.9 6h8.2A2 2 0 0 1 18 7.5l2 5V16\"/><path d=\"M3 16h18v2.5H3z\"/><circle cx=\"7\" cy=\"19\" r=\"1.8\"/><circle cx=\"17\" cy=\"19\" r=\"1.8\"/></svg>車程 75 分</span><span class=\"ds-img\"><i>2</i></span><span><b>高千穗神社</b><small>MAPCODE <em>330 741 345*38</em></small></span></li></ol>",
+      "css": ".ds-stops{list-style:none;margin:0;padding:0;border-top:2px solid #2A2622}.ds-stops li{position:relative;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;min-height:76px;padding:12px 0;border-bottom:1px solid #E8E2D8}.ds-stops li.leg{padding-top:22px}.ds-stops li::before{content:\"\";position:absolute;left:27px;width:2px;top:0;bottom:-1px;background:var(--day)}.ds-stops li:first-child::before{top:50%}.ds-stops li:last-child::before{bottom:50%}.ds-img{position:relative;z-index:1;width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#7d8b5a,#3e4a2a)}.ds-img--icon{display:grid;place-items:center;background:var(--soft);color:var(--day)}.ds-img i{position:absolute;left:-5px;top:-5px;min-width:22px;height:22px;border-radius:99px;background:var(--day);color:#fff;font:900 12px/22px \"Zen Maru\",\"Noto Sans TC\",sans-serif;text-align:center;font-style:normal;box-shadow:0 0 0 2px #fff}.ds-stops b{display:block;font:900 17px/1.35 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#2A2622}.ds-stops small{display:block;font:700 10.5px/1.5 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#6B6258;letter-spacing:.06em;margin-top:3px}.ds-stops em{font:700 14px/1.3 \"Noto Sans TC\",\"PingFang TC\",sans-serif;color:#2A2622;font-style:normal;letter-spacing:.02em}.ds-leg{position:absolute;z-index:2;top:-11px;left:68px;display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px 0 7px;border-radius:99px;background:var(--soft);color:var(--day);font:700 12.5px/1 \"Zen Maru\",\"Noto Sans TC\",sans-serif;white-space:nowrap}"
     },
     {
-      "name": "Lodge Card",
+      "name": "Leg Chip",
+      "kind": "chip",
+      "refersTo": "chip-leg",
+      "description": "車程接點膠囊：日色 soft 底、日色字，帶車／步行圖示。",
+      "html": "<span class=\"ds-chip\" style=\"--day:#5B6630;--soft:#EEEFE2\"><svg viewBox=\"0 0 24 24\" width=\"15\" height=\"15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 16v-3.5L6 7.5A2 2 0 0 1 7.9 6h8.2A2 2 0 0 1 18 7.5l2 5V16\"/><path d=\"M3 16h18v2.5H3z\"/><circle cx=\"7\" cy=\"19\" r=\"1.8\"/><circle cx=\"17\" cy=\"19\" r=\"1.8\"/></svg>車程 30 分</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px 0 7px;border-radius:99px;background:var(--soft);color:var(--day);font:700 12.5px/1 \"Zen Maru\",\"Noto Sans TC\",sans-serif}"
+    },
+    {
+      "name": "Placeholder Todo",
+      "kind": "chip",
+      "refersTo": "placeholder-todo",
+      "description": "「待填」：尚未提供的訂房、租車欄位，虛線膠囊，不得以捏造資料取代。",
+      "html": "<span class=\"ds-todo\">待填</span>",
+      "css": ".ds-todo{display:inline-block;padding:0 10px;border:1.5px dashed #A79F94;border-radius:99px;color:#6B6258;font:700 12px/1.75 \"Noto Sans TC\",\"PingFang TC\",sans-serif}"
+    },
+    {
+      "name": "Lodge Card with Nights Strip",
       "kind": "card",
       "refersTo": "lodge-card",
-      "description": "日色淡底卡頭的住宿卡，含可收合訂房資訊。",
-      "html": "<article class=\"ds-lodge\"><header class=\"ds-lodge__head\"><b>熊本阿蘇萬楓酒店</b><small>11/24 入住 – 11/26 退房・2 晚</small></header><div class=\"ds-lodge__body\"><dl><dt>電話</dt><dd>+81 967-34-0515</dd><dt>訂房編號</dt><dd><span class=\"ds-todo\">待填</span></dd></dl></div></article>",
-      "css": ".ds-lodge{border:1px solid #E8E2D8;border-radius:16px;background:#fff;overflow:hidden}.ds-lodge__head{display:grid;gap:2px;padding:16px;background:var(--day-soft,#EDEFE3)}.ds-lodge__head b{font:900 18px/1.3 var(--round,\"Zen Maru\",sans-serif)}.ds-lodge__head small{font-size:13px;color:#3E3831}.ds-lodge__body{padding:16px}.ds-lodge dl{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;margin:0;font-size:14.5px}.ds-lodge dt{color:#6B6258;font-size:13px}.ds-lodge dd{margin:0}.ds-todo{display:inline-block;padding:0 10px;border:1.5px dashed #A79F94;border-radius:99px;color:#6B6258;font-size:12px;line-height:1.75;font-weight:700}"
+      "description": "住宿卡：soft 卡頭，名稱下方 7 格夜晚色階，住的那幾晚填當天 chip 色。",
+      "html": "<article class=\"ds-lodge\" style=\"--day:#4F5E2C;--soft:#EDEFE3\"><header><svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 6v13M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6\"/><circle cx=\"7\" cy=\"11.5\" r=\"2\"/></svg><div><h3>熊本阿蘇萬楓酒店</h3><p>11/24 入住 – 11/26 退房 · 2 晚</p><span class=\"ds-nights\"><i style=\"--c:#5F7036\"></i><i style=\"--c:#6E7A3A\"></i><i></i><i></i><i></i><i></i><i></i></span></div></header><dl><dt>地址</dt><dd>熊本縣阿蘇市黑川字原口 1407 番 1</dd><dt>電話</dt><dd><a href=\"#\">+81 967-34-0515</a></dd></dl></article>",
+      "css": ".ds-lodge{border:1px solid #E8E2D8;border-radius:16px;background:#fff;overflow:hidden;max-width:420px}.ds-lodge header{display:flex;align-items:center;gap:12px;padding:16px;background:var(--soft);color:var(--day)}.ds-lodge header div{flex:1;min-width:0}.ds-lodge h3{margin:0;font:900 18px/1.3 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#2A2622}.ds-lodge header p{margin:2px 0 0;font-size:13px;color:#3E3831}.ds-nights{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:238px;height:8px;margin-top:8px}.ds-nights i{background:var(--c,#fff)}.ds-nights i:first-child{border-radius:99px 0 0 99px}.ds-nights i:last-child{border-radius:0 99px 99px 0}.ds-lodge dl{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;margin:0;padding:16px;font-size:14.5px}.ds-lodge dt{color:#6B6258;font-size:13px}.ds-lodge dd{margin:0}.ds-lodge a{color:var(--day);font-weight:700}"
+    },
+    {
+      "name": "Climate Lead Box",
+      "kind": "card",
+      "refersTo": "info-box",
+      "description": "資訊方塊：g-50 底無框；氣候方塊佔滿整列，氣溫用 Numeral Lead。",
+      "html": "<section class=\"ds-info\" style=\"--day:#4F5E2C\"><div><h3>氣候</h3><p class=\"t\"><b>9–16<small>°C</small></b><span>11 月平均氣溫，早晚溫差大</span></p></div><p>熊本、阿蘇與大分在 11 月的平均氣溫大約落在 9°C 至 16°C 之間，深秋氣息濃厚且早晚溫差極大。</p></section>",
+      "css": ".ds-info{display:grid;grid-template-columns:5fr 7fr;gap:32px;align-items:center;background:#FAF8F5;border-radius:16px;padding:32px}.ds-info h3{margin:0 0 8px;font:900 17px/1.3 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:#2A2622}.ds-info .t{display:flex;flex-direction:column;gap:8px;margin:0}.ds-info b{font:900 clamp(48px,13vw,72px)/1 \"Zen Maru\",\"Noto Sans TC\",sans-serif;color:var(--day);letter-spacing:-.01em}.ds-info b small{font:700 .4em/1 \"Noto Sans TC\",\"PingFang TC\",sans-serif;margin-left:2px}.ds-info span{font-size:14px;color:#6B6258}.ds-info>p{margin:0;font-size:15px;line-height:1.7;color:#3E3831}"
     },
     {
       "name": "Masthead",
       "kind": "nav",
       "refersTo": "masthead",
-      "description": "整塊鋪當日深色的 sticky 頁首，換日時轉色。",
+      "description": "頁首：整塊當日 deep 色，白字旅程名、日期與導讀列；寬螢幕頁籤在右側。",
       "html": "<header class=\"ds-mast\"><b>熊本・阿蘇・由布院・別府</b><small>2026.11.24 – 12.01</small></header>",
       "css": ".ds-mast{display:grid;gap:2px;padding:12px 16px;background:var(--day,#4F5E2C);color:#fff;transition:background-color .6s cubic-bezier(.16,1,.3,1)}.ds-mast b{font:900 22px/1.25 var(--round,\"Zen Maru\",sans-serif);letter-spacing:.02em}.ds-mast small{font-size:12.5px;opacity:.88}"
-    },
-    {
-      "name": "Info Box",
-      "kind": "card",
-      "refersTo": "info-box",
-      "description": "g-50 底、無框的資訊方塊。",
-      "html": "<section class=\"ds-info\"><h3>11 月下旬天氣</h3><p class=\"ds-temp\"><b>12°</b><span>示意數值</span></p></section>",
-      "css": ".ds-info{background:#FAF8F5;border-radius:16px;padding:16px}.ds-info h3{font:900 17px/1.3 var(--round,\"Zen Maru\",sans-serif);margin:0 0 8px}.ds-temp{display:flex;align-items:baseline;gap:8px;margin:0}.ds-temp b{font:900 34px/1 var(--round,\"Zen Maru\",sans-serif);color:var(--day,#4F5E2C);font-variant-numeric:tabular-nums}.ds-temp span{color:#6B6258;font-size:13px}"
     }
   ],
   "narrative": {
     "northStar": "和風沉穩",
-    "overview": "這趟 11 月下旬的九州自駕是一路走進深秋。系統的核心是一條「和風沉穩」日色色階：8 天各擁有一個低彩度的傳統和色，從 Day 1 苔綠經黃土、柿渋、弁柄，一路沉到 Day 8 葡萄鼠。整個頁面只有一個會變的顏色——選中日的秋色——它鋪滿頁首、染上主要按鈕、今日路段、編號徽章與淡底塊；其餘一律是白底與一組暖灰。換日時，頁首與地圖的顏色以 0.6 秒平滑轉換，像季節往前推了一格。\n\n密度屬於「旅途中單手查詢」：手機優先、底部頁籤、44px 以上的觸控目標，資訊靠清單與細暖灰分隔線組織，而不是卡片堆疊。標題用圓潤厚重的 Zen Maru Gothic，內文交給系統黑體，數字一律等寬對齊。圖像只出現在景點：清單裡是 56px 的圓角小照片，展開後才是大圖。\n\n已確認拒絕的方向：行程 App 常見的「封面大圖＋白卡片」、上一版的昭和印刷摺頁風格，以及先前高彩度的紅葉見頃色階（使用者在實際網站截圖比較五組色調後選定「和風沉穩」）。",
+    "overview": "這趟 11 月下旬的九州自駕是一路走進深秋。系統的核心是一條「和風沉穩」日色色階：8 天各擁有一個低彩度的傳統和色，從 Day 1 苔綠經黃土、柿渋、弁柄，一路沉到 Day 8 葡萄鼠。整個頁面只有一個會變的顏色——選中日的秋色——它鋪滿頁首，從日期色階一路由濃到淡漸回白底，並染上主要按鈕、今日路段、路線脊線、編號徽章與淡底塊；其餘一律是白底與一組暖灰。換日時，整頁的日色以 0.6 秒平滑轉換，像季節往前推了一格。\n\n密度屬於「旅途中單手查詢」：手機優先、底部頁籤、44px 以上的觸控目標，資訊靠清單與細暖灰分隔線組織，而不是卡片堆疊。標題用圓潤厚重的 Zen Maru Gothic，內文交給系統黑體，數字一律等寬對齊。圖像只出現在景點：清單裡是 56px 的圓角小照片，展開後才是大圖。\n\n已確認拒絕的方向：行程 App 常見的「封面大圖＋白卡片」、上一版的昭和印刷摺頁風格，以及先前高彩度的紅葉見頃色階（使用者在實際網站截圖比較五組色調後選定「和風沉穩」）。",
     "keyCharacteristics": [
       "白底＋單一暖灰階（g-50 → ink）為唯一中性色。",
       "8 個和風沉穩日色，各有 chip / deep / soft 三個角色，日期格上一律白字；選中日由 JS 換上 `--day`、`--day-chip`、`--day-soft`。",
-      "頁首整塊鋪當日深色，換日時轉色。",
+      "頁首整塊鋪當日深色，往下接一條由濃到淡、淡回白底的當日漸層；換日時一起轉色。",
       "Zen Maru Gothic（自架子集）用於標題、標籤、按鈕；內文用系統 CJK 黑體；tabular-nums。",
       "圓角 8 / 12 / 16 加膠囊形；無重陰影；細暖灰分隔線與 2px 墨線分段。"
     ],
     "rules": [
       {
         "name": "The One Season Rule",
-        "body": "任何畫面上只有一個和色在發聲：選中日的 deep / soft。其他天的顏色只允許出現在色階日期鈕、小地圖的淡化路段與「吃什麼」地區小方塊這些「整條色階」的地方。新增或調整日色時維持和風沉穩的低彩度，不要放回鮮豔的紅葉色。",
+        "body": "任何畫面上只有一個和色在發聲：選中日的 deep / soft。其他天的顏色只允許出現在色階日期鈕、「吃什麼」地區小方塊、行前清單的和色色階進度條與住宿卡的夜晚色階這些「整條色階」的地方。新增或調整日色時維持和風沉穩的低彩度，不要放回鮮豔的紅葉色。",
         "section": "colors"
       },
       {
         "name": "The One Gray Rule",
-        "body": "中性色只能從 white、g-50…g-800、ink 這一組暖灰取用。不要引入冷灰、純黑或另一組灰。",
+        "body": "中性色只能從 white、g-50…g-800、ink 這一組暖灰取用。不要引入冷灰、純黑或另一組灰。唯一例外是頁首「離線中」膠囊的 28% 黑半透明底，用來在任何日色上壓出一塊較深的底。",
         "section": "colors"
       },
       {
@@ -540,7 +677,7 @@
       },
       {
         "name": "The Tabular Rule",
-        "body": "時刻、車程、日期、溫度都用 tabular-nums，車程與時間靠右緊貼對齊。PDF 沒有的各站時刻不得虛構；只顯示「車程 N 分」「步行 N 分」。",
+        "body": "時刻、車程、日期、溫度都用 tabular-nums，時刻靠右緊貼對齊；車程則掛在兩站交界的接點膠囊上。PDF 沒有的各站時刻不得虛構；只顯示「車程 N 分」「步行 N 分」。",
         "section": "typography"
       },
       {
@@ -553,7 +690,7 @@
       "**Do** 讓選中日的秋色成為唯一強調色，透過 `--day` / `--day-chip` / `--day-soft` 引用。",
       "**Do** 中性色只從 white、g-50…g-800、ink 取用。",
       "**Do** 標題、名稱、按鈕、膠囊用 Zen Maru Gothic；段落用系統黑體。",
-      "**Do** 數字用 tabular-nums，車程與時刻靠右對齊。",
+      "**Do** 數字用 tabular-nums，時刻靠右對齊，車程掛在路線脊線的接點上。",
       "**Do** 以 1px g-200 細線與 2px ink 墨線分段，用 g-50 / 日色 soft 底塊分層。",
       "**Do** 圓角只用 8 / 12 / 16px 與膠囊形；按鈕一律膠囊形、最小 44px 高。",
       "**Do** 未提供的資料以虛線「待填」膠囊表示。"

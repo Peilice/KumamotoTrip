@@ -112,6 +112,12 @@
     return facts([["訂房編號", val(b.no)], ["房型", val(b.room)], ["金額", b.price ? '<span class="num">' + esc(b.price) + "</span>" : val("")], ["付款", val(b.paid)],
       noteRow("hotel-" + k, b.note)], "facts--grid");
   }
+  /* 全程 7 晚排成一條色階，這間飯店住的那幾晚填上當天的日色 */
+  function nightsStrip(h) {
+    return '<span class="nights" aria-hidden="true">' + T.days.slice(0, -1).map(function (d, i) {
+      return "<i" + (h.nights.indexOf(d.date) > -1 ? ' style="--c:' + DAYC[i].chip + '"' : "") + "></i>";
+    }).join("") + "</span>";
+  }
   function nightsLabel(h) {
     var last = h.nights[h.nights.length - 1];
     var out = new Date(Date.parse(last) + 864e5).toISOString().slice(0, 10);
@@ -121,7 +127,7 @@
     var h = T.hotels[key];
     return '<article class="lodge">' +
       '<header class="lodge__head">' + icon("bed") + '<div><h3 class="lodge__name">' + esc(h.name) + "</h3>" +
-      '<p class="lodge__nights num">' + nightsLabel(h) + (h.nameAlt ? " · " + esc(h.nameAlt) : "") + "</p></div></header>" +
+      '<p class="lodge__nights num">' + nightsLabel(h) + (h.nameAlt ? " · " + esc(h.nameAlt) : "") + "</p>" + nightsStrip(h) + "</div></header>" +
       '<div class="lodge__body">' +
       facts([["地址", esc(h.address)], ["電話", '<a class="num" href="tel:' + tel(h.phone) + '">' + esc(h.phone) + "</a>"]]
         .concat(T.mapcodes && T.mapcodes[h.name] ? [["MAPCODE", '<span class="num mc__v">' + esc(T.mapcodes[h.name]) + "</span>"]] : [])) +
@@ -137,11 +143,11 @@
   function proj(p) { return [((p[0] - 129.55) * 60).toFixed(1), ((34.02 - p[1]) * 71).toFixed(1)]; }
   function pts(names) { return names.map(function (n) { return GEO[n]; }).filter(Boolean).map(proj); }
   function line(ps) { return ps.map(function (p) { return p.join(","); }).join(" "); }
-  /* 全程依日期分段，各用當天秋色；選中那天加粗，像季節一路推進 */
+  /* 全程依日期分段，其他天淡淡帶過；選中那天加粗成白色實線 */
   function miniMap(d) {
-    var segs = T.days.map(function (x, i) {
+    var segs = T.days.map(function (x) {
       var ps = pts(x.stops.map(function (s) { return s.name; }));
-      return '<polyline class="minimap__seg' + (x.n === d.n ? ' is-on"' : '" style="stroke:' + DAYC[i].chip + '"') + ' points="' + line(ps) + '"/>';
+      return '<polyline class="minimap__seg' + (x.n === d.n ? " is-on" : "") + '" points="' + line(ps) + '"/>';
     });
     var on = segs.splice(d.n - 1, 1)[0];
     var tp = pts(d.stops.map(function (s) { return s.name; })), last = tp[tp.length - 1];
@@ -167,16 +173,17 @@
 
   function stopHtml(d, s, num) {
     var base = s.kind === "start" || s.kind === "hotel", transfer = s.kind === "transfer", rental = s.kind === "rental";
-    var move = s.move ? '<span class="stop__move num">' + icon(s.move.mode === "walk" ? "walk" : "car") + moveText(s.move) + "</span>" : '<span class="stop__move"></span>';
+    /* 抵達這一站前的移動，掛在上一站與這一站的交界，像路線上的一段 */
+    var leg = s.move ? '<span class="stop__leg num">' + icon(s.move.mode === "walk" ? "walk" : "car") + moveText(s.move) + "</span>" : "";
     var role = s.kind === "start" ? "出發" : s.kind === "hotel" ? "今晚住宿" : transfer || rental ? (s.note || "") : "";
     var media = s.img ? '<span class="stop__img"><img src="images/' + s.img + '.jpg" alt="" loading="lazy" width="56" height="56">' + (num ? '<b class="stop__n">' + num + "</b>" : "") + "</span>"
       : '<span class="stop__img stop__img--icon">' + icon(base ? "bed" : transfer ? "plane" : rental ? "car" : "pin") + (num ? '<b class="stop__n">' + num + "</b>" : "") + "</span>";
-    var head = media + '<span class="stop__title"><span class="stop__name">' + esc(s.name) + "</span>" + (role ? '<span class="stop__role">' + esc(role) + "</span>" : "") + (s.kind === "start" ? "" : mapcode(s.name, d)) + "</span>" + move;
+    var head = media + '<span class="stop__title"><span class="stop__name">' + esc(s.name) + "</span>" + (role ? '<span class="stop__role">' + esc(role) + "</span>" : "") + (s.kind === "start" ? "" : mapcode(s.name, d)) + "</span>";
     if (!s.text) {
       var acts = s.kind === "start" || s.kind === "hotel" ? "" : navBtn(s.name, true);
-      return '<li class="stop' + (base ? " stop--base" : "") + '"><div class="stop__head">' + head + "</div>" + (acts ? '<div class="actions actions--stop">' + acts + "</div>" : "") + "</li>";
+      return '<li class="stop' + (leg ? " stop--leg" : "") + '">' + leg + '<div class="stop__head">' + head + "</div>" + (acts ? '<div class="actions actions--stop">' + acts + "</div>" : "") + "</li>";
     }
-    return '<li class="stop"><details><summary class="stop__head">' + head + icon("chev", "chev") + "</summary>" +
+    return '<li class="stop' + (leg ? " stop--leg" : "") + '">' + leg + '<details><summary class="stop__head">' + head + icon("chev", "chev") + "</summary>" +
       '<div class="stop__detail">' + detailHtml(s) + "</div></details></li>";
   }
 
@@ -208,7 +215,7 @@
   function renderDay() {
     var d = T.days[state.day - 1];
     var head = '<div class="dayhead"><div class="dayhead__text">' +
-      '<h2 class="dayhead__route">' + esc(d.from) + '<span class="arr" aria-label="到">→</span>' + esc(d.via || d.to) + "</h2>" +
+      '<h2 class="dayhead__route"><span class="pl">' + esc(d.from) + '<span class="arr" aria-label="到">→</span></span><span class="pl">' + esc(d.via || d.to) + "</span></h2>" +
       '<p class="dayhead__meta num">' + md(d.date) + "（" + d.dow + "）</p></div>" +
       miniMap(d) + "</div>";
 
@@ -288,8 +295,11 @@
     var checks = loadChecks(), total = 0;
     var info = T.info.map(function (b) {
       var extra = b.title === "氣候" ? '<p class="temp"><b class="num">9–16<small>°C</small></b><span>11 月平均氣溫，早晚溫差大</span></p>' : "";
-      return '<section class="infobox"><h3>' + esc(b.title) + "</h3>" + extra + (b.text || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
-        (b.list ? facts(b.list.map(function (r) { return [esc(r[0]), esc(r[1])]; })) : "") + "</section>";
+      var body = (b.text || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+        (b.list ? facts(b.list.map(function (r) { return [esc(r[0]), esc(r[1])]; })) : "");
+      /* 氣候是出發前最該看的一項：佔滿整列，溫度放大當主角，說明與穿著放旁邊 */
+      if (extra) return '<section class="infobox infobox--lead"><div class="infobox__key"><h3>' + esc(b.title) + "</h3>" + extra + '</div><div class="infobox__body">' + body + "</div></section>";
+      return '<section class="infobox"><h3>' + esc(b.title) + "</h3>" + body + "</section>";
     }).join("");
     var food = T.food.map(function (a, i) {
       return '<section class="food__col" style="--c:' + DAYC[[1, 3, 5, 7][i]].chip + '"><h3 class="food__area">' + esc(a.area) + "</h3><ul>" +

@@ -15,8 +15,13 @@
 @font-face { font-family: "Zen Maru"; src: url("../fonts/fill-900.woff2") format("woff2"); font-weight: 900; unicode-range: U+55CE, U+5976, U+7076, U+7CD5, U+7CF0; font-display: swap; }
 @font-face { font-family: "Zen Maru"; src: url("../fonts/fill-700.woff2") format("woff2"); font-weight: 700; unicode-range: U+55CE, U+5976, U+7076, U+7CD5, U+7CF0; font-display: swap; }
 
+/* 註冊成顏色，換日時 --day 本身就能平滑過渡，漸層也跟著一起轉色 */
+@property --day { syntax: "<color>"; inherits: true; initial-value: #4F5E2C; }
+@property --day-soft { syntax: "<color>"; inherits: true; initial-value: #EDEFE3; }
+
 :root {
   color-scheme: light;
+  transition: --day .6s var(--ease), --day-soft .6s var(--ease);
   /* 暖灰階：所有中性色都從這一組來 */
   --white: #FFFFFF;
   --g-50: #FAF8F5;
@@ -44,7 +49,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; scrollbar-color: var(--g-400) var(--g-100); }
+html { overflow-x: clip; -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; scrollbar-color: var(--g-400) var(--g-100); }
 body {
   margin: 0;
   background: var(--white);
@@ -70,7 +75,7 @@ summary::-webkit-details-marker { display: none; }
 .skip:focus { left: 8px; }
 
 /* ── 頁首：整塊鋪上當日秋色 ─────────────── */
-.mast { background: var(--day); color: var(--white); position: sticky; top: 0; z-index: 20; transition: background-color .6s var(--ease); }
+.mast { background: var(--day); color: var(--white); position: sticky; top: 0; z-index: 20; }
 .mast__inner { max-width: var(--max); margin: 0 auto; padding: var(--s3) var(--gutter) var(--s1); display: flex; align-items: center; gap: var(--s5); }
 .mast__title { min-width: 0; }
 .mast__name { font: 900 clamp(19px, 5vw, 24px)/1.25 var(--round); margin: 0; letter-spacing: .02em; }
@@ -112,7 +117,12 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 .h-sub { font: 900 17px/1.4 var(--round); margin: 0 0 var(--s2); }
 
 /* ── 色階日期鈕 ─────────────────────────── */
-.days { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px; }
+/* 日期鈕與當日標題共用一條由濃到淡的當日色漸層：從頁首的深色接下來，最後淡回白底。
+   兩段左右都延伸到視窗邊緣，內容仍對齊 main 的欄寬；--mid 是兩段的交接色 */
+#view-trip { padding-top: 0; --mid: color-mix(in srgb, var(--day) 62%, var(--day-soft)); }
+.days { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px;
+  margin: 0 calc(50% - 50vw); padding: var(--s4) calc(50vw - 50%) var(--s3);
+  background: linear-gradient(var(--day), var(--mid)); }
 .days__btn { appearance: none; border: 0; background: var(--c); color: var(--ci); cursor: pointer; border-radius: var(--r-sm);
   min-height: 58px; padding: 6px 0 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font: inherit; position: relative;
   transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
@@ -122,25 +132,32 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 .days__btn[aria-selected="true"] { box-shadow: 0 0 0 2px var(--white), 0 0 0 4.5px var(--ink); }
 .days__btn.is-today::after { content: "今天"; position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font: 700 10px/1 var(--body); padding: 3px 5px; background: var(--ink); color: var(--white); border-radius: 99px; white-space: nowrap; }
 
-/* ── 當日標題＋小地圖 ───────────────────── */
-.dayhead { margin: var(--s5) 0 var(--s4); display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: var(--s3); align-items: center; }
-.dayhead__route { font: 900 clamp(26px, 7.4vw, 40px)/1.2 var(--round); margin: 0; letter-spacing: .01em; }
+/* ── 當日標題＋小地圖：接在日期鈕下方，漸層在這裡淡回白底 ── */
+.dayhead { margin: 0 calc(50% - 50vw) var(--s4); padding: var(--s6) calc(50vw - 50%) var(--s5);
+  background: linear-gradient(var(--mid), var(--day-soft) 42%, var(--white));
+  display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: var(--s3); align-items: center; }
+.dayhead__route { font: 900 clamp(32px, 9.6vw, 60px)/1.15 var(--round); margin: 0; letter-spacing: .01em; text-wrap: balance; }
+.dayhead__route .pl { white-space: nowrap; }
 .dayhead__route .arr { color: var(--day); margin: 0 .2em; font-weight: 700; }
-.dayhead__meta { margin: var(--s1) 0 0; color: var(--g-600); font-size: 13.5px; }
-.dayhead__chips { margin: var(--s3) 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { display: inline-flex; align-items: center; padding: 4px 11px; border-radius: 99px; background: var(--day-soft); color: var(--day); font: 700 12.5px/1.2 var(--round); }
-.chip--quiet { background: var(--g-100); color: var(--g-800); }
+.dayhead__meta { margin: var(--s2) 0 0; color: var(--g-800); font: 700 clamp(14px, 1.6vw, 17px)/1.4 var(--round); }
 
 .minimap { width: 120px; height: auto; display: block; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
-.minimap__land { fill: var(--g-100); stroke: var(--g-200); stroke-width: 1; stroke-linejoin: round; }
-.minimap__seg { fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
-.minimap__seg.is-on { stroke: var(--day); stroke-width: 5.5; opacity: 1; transition: stroke .6s var(--ease); }
+/* 陸地用半透明白，在漸層上仍看得出輪廓；其他天的路段淡淡帶過，今天的路線是唯一的實線 */
+.minimap__land { fill: rgba(255,255,255,.6); stroke: var(--white); stroke-width: 1; stroke-linejoin: round; }
+.minimap__seg { fill: none; stroke: var(--g-400); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+.minimap__seg.is-on { stroke: var(--day); stroke-width: 5.5; opacity: 1; }
 .minimap__end { fill: var(--white); stroke: var(--day); stroke-width: 2.5; }
 .minimap__labels { font: 700 15px var(--round); fill: var(--g-800); paint-order: stroke; stroke: var(--white); stroke-width: 3px; stroke-linejoin: round; }
 
 @media (min-width: 600px) {
-  .dayhead { grid-template-columns: minmax(0, 1fr) 150px; }
-  .minimap { width: 150px; }
+  .dayhead { grid-template-columns: minmax(0, 1fr) 170px; padding-block: var(--s7) var(--s6); }
+  .minimap { width: 170px; }
+}
+@media (min-width: 960px) {
+  .dayhead { grid-template-columns: minmax(0, 1fr) 180px; padding-block: var(--s6) var(--s5); }
+  .days { padding-top: var(--s5); padding-bottom: var(--s4); }
+  .dayhead__meta { margin-top: var(--s3); }
+  .minimap { width: 180px; }
 }
 
 .daygrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s6); }
@@ -152,9 +169,23 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 /* ── 景點清單 ───────────────────────────── */
 .stops { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
 .stop { border-bottom: 1px solid var(--g-200); }
-.stop__head { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto auto; gap: var(--s3); align-items: center; padding: var(--s3) 0; min-height: 76px; }
-.stop--base .stop__head { grid-template-columns: 56px minmax(0, 1fr) auto; }
-.stop__img { position: relative; width: 56px; height: 56px; }
+.stop { position: relative; }
+.stop__head { position: relative; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: var(--s3); align-items: center; padding: var(--s3) 0; min-height: 76px; }
+.stop--leg .stop__head { padding-top: 22px; }
+/* 路線脊線：一條日色直線穿過每一站的照片，把整天串成一條路 */
+.stop__head::before, .actions--stop::before { content: ""; position: absolute; left: 27px; width: 2px; background: var(--day); }
+.stop__head::before { top: 0; bottom: -1px; }
+.stop:first-child .stop__head::before { top: 50%; }
+.stop:last-child .stop__head::before { bottom: 50%; }
+.stop:has(.actions--stop) .stop__head::before { bottom: 0; }
+.actions--stop { position: relative; }
+.actions--stop::before { left: calc(27px - 56px - var(--s3)); top: calc(var(--s2) * -1); bottom: calc(var(--s5) * -1 - 1px); }
+.stop:last-child .actions--stop::before { display: none; }
+/* 抵達這一站前的車程：掛在兩站交界、與景點名同一條對齊線 */
+.stop__leg { position: absolute; z-index: 2; top: -11px; left: calc(56px + var(--s3)); display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 9px 0 7px;
+  border-radius: 99px; background: var(--day-soft); color: var(--day); font: 700 12.5px/1 var(--round); white-space: nowrap; }
+.stop__leg .ic { width: 15px; height: 15px; }
+.stop__img { position: relative; z-index: 1; width: 56px; height: 56px; }
 .stop__img img { width: 56px; height: 56px; object-fit: cover; border-radius: var(--r-md); }
 .stop__img--icon { display: grid; place-items: center; border-radius: var(--r-md); background: var(--day-soft); color: var(--day); }
 .stop__img--icon .ic { width: 24px; height: 24px; }
@@ -163,15 +194,13 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 .stop__title { min-width: 0; }
 .stop__name { display: block; font: 900 17px/1.35 var(--round); }
 .stop__role { display: block; font-size: 12.5px; color: var(--g-600); margin-top: 1px; }
-.stop__move { display: inline-flex; align-items: center; gap: 4px; justify-self: end; font-size: 12.5px; font-weight: 700; color: var(--day); white-space: nowrap; }
-.stop__move .ic { width: 16px; height: 16px; }
 summary.stop__head:hover .stop__name { color: var(--day); }
 /* 車用導航 MAPCODE：不用展開就看得到，數字等寬好對照輸入 */
 .mc { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; margin-top: 3px; line-height: 1.3; }
 .mc__k { font: 700 10.5px/1.5 var(--round); letter-spacing: .06em; color: var(--g-600); }
 .mc__v { font: 700 14px/1.3 var(--body); color: var(--ink); letter-spacing: .02em; white-space: nowrap; user-select: all; }
 .subs .mc { margin-top: 4px; }
-.actions--stop { margin: calc(var(--s2) * -1) 0 var(--s3) calc(56px + var(--s3)); }
+.actions--stop { margin: calc(var(--s2) * -1) 0 var(--s5) calc(56px + var(--s3)); }
 
 .stop__detail { padding: 0 0 var(--s5); }
 .stop__detail p { margin: 0 0 var(--s3); color: var(--g-800); font-size: 15.5px; line-height: 1.85; }
@@ -216,6 +245,12 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 .lodge__head > .ic { width: 26px; height: 26px; color: var(--day); }
 .lodge .lodge__name { font: 900 18px/1.3 var(--round); margin: 0; }
 .lodge .lodge__nights { margin: 2px 0 0; font-size: 13px; color: var(--g-800); }
+.lodge__head > div { flex: 1; min-width: 0; }
+/* 住哪幾晚：全程 7 晚一條色階，住的那幾晚填上當天的日色，跟日期鈕同一條色階 */
+.nights { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; max-width: 238px; height: 8px; margin-top: var(--s2); }
+.nights i { background: var(--c, var(--white)); }
+.nights i:first-child { border-radius: 99px 0 0 99px; }
+.nights i:last-child { border-radius: 0 99px 99px 0; }
 .lodge__body { padding: var(--s4); }
 .lodge__desc { color: var(--g-800); font-size: 14.5px; line-height: 1.8; margin: var(--s4) 0 0; }
 .facts { margin: 0; display: grid; gap: 6px; font-size: 14.5px; }
@@ -288,13 +323,24 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 
 /* ── 資訊 ───────────────────────────────── */
 .infogrid { display: grid; gap: var(--s4); }
-@media (min-width: 720px) { .infogrid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 720px) { .infogrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .infobox { background: var(--g-50); border-radius: var(--r-lg); padding: var(--s4); }
 .infobox h3 { font: 900 17px/1.3 var(--round); margin: 0 0 var(--s2); }
 .infobox p { margin: 0 0 var(--s2); color: var(--g-800); font-size: 15px; }
 .infobox .facts { margin-top: var(--s2); }
 .temp { display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap; }
 .temp b { font: 900 34px/1 var(--round); color: var(--day); }
+/* 氣候：佔滿整列，溫度放大當主角 */
+.infobox--lead { grid-column: 1 / -1; padding: var(--s5) var(--s4); }
+.infobox--lead .temp { margin-bottom: var(--s3); }
+.infobox--lead .temp b { font-size: clamp(48px, 13vw, 72px); letter-spacing: -.01em; }
+.infobox--lead .temp b small { font-size: .4em; }
+.infobox--lead .temp span { font-size: 14px; }
+@media (min-width: 720px) {
+  .infobox--lead { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s6); align-items: center; padding: var(--s6); }
+  .infobox--lead .temp { margin-bottom: 0; flex-direction: column; align-items: flex-start; gap: var(--s2); }
+  .infobox--lead .infobox__body p:first-child { margin-top: 0; }
+}
 .temp b small { font: 700 20px/1 var(--body); margin-left: 2px; }
 .temp span { color: var(--g-600); font-size: 13px; }
 
@@ -347,7 +393,7 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 }
 @keyframes front { 0% { filter: none; } 35% { filter: brightness(1.45) saturate(1.1); } 100% { filter: none; } }
 @keyframes rise { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .mast, .minimap__seg { transition: none; } }
+@media (prefers-reduced-motion: reduce) { :root { transition: none; } }
 
 @media (max-width: 370px) {
   .days { gap: 3px; }
