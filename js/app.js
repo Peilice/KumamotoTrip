@@ -56,7 +56,6 @@
     catch (e) { return new Date().toISOString().slice(0, 10); }
   }
   var TODAY = todayJP();
-  var dayDiff = function (a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 864e5); };
   var todayDay = T.days.filter(function (d) { return d.date === TODAY; })[0];
 
   var state = { tab: "trip", day: todayDay ? todayDay.n : 1 };
@@ -77,20 +76,32 @@
     } else {
       html = "<b>" + { transport: "交通", stay: "住宿", info: "資訊" }[state.tab] + "</b>" + { transport: "航班與租車", stay: "四間飯店・七晚", info: "氣候、美食與行前清單" }[state.tab];
     }
-    var n = dayDiff(TODAY, T.start);
-    if (n > 0) html += ' <span class="u"><span class="sep">·</span>倒數 ' + n + " 天</span>";
-    else if (dayDiff(T.end, TODAY) > 0) html += '<span class="sep">·</span>旅程回顧';
     $("#guide").innerHTML = html;
   }
 
   /* ── 待填欄位 ───────────────────────── */
   function val(v) { return v ? esc(v) : '<span class="todo">待填</span>'; }
   function facts(rows, cls) {
-    return '<dl class="facts' + (cls ? " " + cls : "") + '">' + rows.map(function (r) { return '<div class="facts__row"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("") + "</dl>";
+    return '<dl class="facts' + (cls ? " " + cls : "") + '">' + rows.map(function (r) { return '<div class="facts__row' + (r[2] ? " " + r[2] : "") + '"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("") + "</dl>";
   }
-  function bookingFacts(b) {
-    return facts([["訂房編號", val(b.no)], ["PIN", val(b.pin)], ["房型", val(b.room)], ["房號", val(b.roomNo)],
-      ["人數", val(b.guests)], ["金額", val(b.price)], ["付款", val(b.paid)], ["免費取消", val(b.cancel)], ["備註", val(b.note)]], "facts--grid");
+
+  /* ── 備註：可在網頁上直接打字，存在這台裝置的瀏覽器 ── */
+  var NK = "kyushu2026-notes";
+  function loadNotes() { try { return JSON.parse(localStorage.getItem(NK)) || {}; } catch (e) { return {}; } }
+  function saveNote(k, v) { try { var o = loadNotes(); o[k] = v; localStorage.setItem(NK, JSON.stringify(o)); } catch (e) {} }
+  function noteRow(k, fallback) {
+    var o = loadNotes(), v = Object.prototype.hasOwnProperty.call(o, k) ? o[k] : (fallback || "");
+    return ["備註", '<textarea class="note" data-note="' + k + '" rows="2" placeholder="點這裡輸入備註" aria-label="備註">' + esc(v) + "</textarea>", "facts__row--wide"];
+  }
+  document.addEventListener("input", function (e) {
+    var k = e.target.getAttribute && e.target.getAttribute("data-note"); if (!k) return;
+    saveNote(k, e.target.value);
+    /* 同一間飯店在行程頁和住宿頁各有一份，一起同步 */
+    document.querySelectorAll('[data-note="' + k + '"]').forEach(function (t) { if (t !== e.target) t.value = e.target.value; });
+  });
+
+  function bookingFacts(k, b) {
+    return facts([["訂房編號", val(b.no)], ["房型", val(b.room)], ["付款", val(b.paid)], noteRow("hotel-" + k, b.note)], "facts--grid");
   }
   function nightsLabel(h) {
     var last = h.nights[h.nights.length - 1];
@@ -107,7 +118,7 @@
       '<div class="actions"><a class="btn btn--day" href="' + mapUrl(h.name + " " + h.address) + '" target="_blank" rel="noopener">' + icon("nav") + "導航</a>" +
       '<a class="btn" href="tel:' + tel(h.phone) + '">' + icon("phone") + "撥打電話</a></div>" +
       (opts && opts.desc ? '<p class="lodge__desc">' + esc(h.desc) + "</p>" : "") +
-      '<details class="slot"' + (opts && opts.openBooking ? " open" : "") + '><summary>' + icon("ticket") + "訂房資訊" + icon("chev", "chev") + "</summary>" + bookingFacts(h.booking) + "</details>" +
+      '<details class="slot"' + (opts && opts.openBooking ? " open" : "") + '><summary>' + icon("ticket") + "訂房資訊" + icon("chev", "chev") + "</summary>" + bookingFacts(key, h.booking) + "</details>" +
       "</div></article>";
   }
 
@@ -179,15 +190,10 @@
   }
 
   function renderDay() {
-    var d = T.days[state.day - 1], c = DAYC[state.day - 1];
-    var drive = 0, walk = 0;
-    d.stops.forEach(function (s) { if (s.move) { if (s.move.mode === "walk") walk += s.move.min; else drive += s.move.min; } });
-    var sights = d.stops.filter(function (s) { return !s.kind; }).length;
-    var dur = drive >= 60 ? Math.floor(drive / 60) + " 小時" + (drive % 60 ? " " + (drive % 60) + " 分" : "") : drive + " 分";
+    var d = T.days[state.day - 1];
     var head = '<div class="dayhead"><div class="dayhead__text">' +
       '<h2 class="dayhead__route">' + esc(d.from) + '<span class="arr" aria-label="到">→</span>' + esc(d.via || d.to) + "</h2>" +
-      '<p class="dayhead__meta num">' + md(d.date) + "（" + d.dow + "）· " + sights + " 個景點 · 車程約 " + dur + (walk ? " · 步行約 " + walk + " 分" : "") + "</p>" +
-      '<p class="dayhead__chips"><span class="chip">Day ' + d.n + " · " + c.name + "</span>" + (d.via ? '<span class="chip chip--quiet">' + esc(d.to) + " 住宿</span>" : "") + "</p></div>" +
+      '<p class="dayhead__meta num">' + md(d.date) + "（" + d.dow + "）</p></div>" +
       miniMap(d) + "</div>";
 
     var num = 0;
@@ -236,7 +242,7 @@
       '<h2 class="h-sec">租車</h2><div class="panel">' +
       facts([["租車公司", val(r.company)], ["預約編號", val(r.bookingNo)], ["取車地點", val(r.pickupPlace)], ["取車時間", val(r.pickupTime)],
         ["還車地點", val(r.returnPlace)], ["還車時間", val(r.returnTime)], ["車型", val(r.car)], ["保險", val(r.insurance)],
-        ["ETC", val(r.etc)], ["金額", val(r.price)], ["聯絡電話", r.phone ? '<a href="tel:' + tel(r.phone) + '">' + esc(r.phone) + "</a>" : val("")], ["備註", val(r.note)]], "facts--grid") +
+        ["ETC", val(r.etc)], ["金額", val(r.price)], ["聯絡電話", r.phone ? '<a href="tel:' + tel(r.phone) + '">' + esc(r.phone) + "</a>" : val("")], noteRow("rental", r.note)], "facts--grid") +
       '<p class="hint">租車資料尚未填入，補上後會顯示在這裡。</p></div>';
   }
 

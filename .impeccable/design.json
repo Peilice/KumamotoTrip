@@ -495,7 +495,7 @@
       "kind": "nav",
       "refersTo": "masthead",
       "description": "整塊鋪當日深色的 sticky 頁首，換日時轉色。",
-      "html": "<header class=\"ds-mast\"><b>熊本・阿蘇・由布院・別府</b><small>2026.11.24 – 12.01・8 日自駕</small></header>",
+      "html": "<header class=\"ds-mast\"><b>熊本・阿蘇・由布院・別府</b><small>2026.11.24 – 12.01</small></header>",
       "css": ".ds-mast{display:grid;gap:2px;padding:12px 16px;background:var(--day,#4F5E2C);color:#fff;transition:background-color .6s cubic-bezier(.16,1,.3,1)}.ds-mast b{font:900 22px/1.25 var(--round,\"Zen Maru\",sans-serif);letter-spacing:.02em}.ds-mast small{font-size:12.5px;opacity:.88}"
     },
     {

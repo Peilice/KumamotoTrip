@@ -35,7 +35,7 @@ window.TRIP = {
       address: "熊本縣阿蘇市黑川字原口 1407 番 1",
       phone: "+81 967-34-0515",
       desc: "充滿木質溫馨氣息的大廳休息室裡，設置了附 USB 和電源插座的桌子，可享用免費咖啡和茶飲，還有微波爐、烤箱和製冰機可供使用。飯店附近有單次泡湯的溫泉設施「夢之湯」，可以享受源泉掛流的天然溫泉。",
-      booking: { no: "", pin: "", room: "", roomNo: "", guests: "", price: "", paid: "", cancel: "", note: "" }
+      booking: { no: "", room: "", paid: "", note: "" }
     },
     yufuin: {
       name: "湯布院 山燈館",
@@ -43,7 +43,7 @@ window.TRIP = {
       address: "大分縣由布市湯布院町川上 1553",
       phone: "+81 977-84-5310",
       desc: "位在金鱗湖附近，和式客房全數以檜木製成，還可以遠眺因山型而有「豐後富士」之稱的由布岳連峰。主打湯布院獨有的本格京都風會席料理，菜單每月更換，全部選用大分縣的當季食材。",
-      booking: { no: "", pin: "", room: "", roomNo: "", guests: "", price: "", paid: "", cancel: "", note: "" }
+      booking: { no: "", room: "", paid: "", note: "" }
     },
     beppu: {
       name: "Apartment Hotel YAEZAKI",
@@ -52,7 +52,7 @@ window.TRIP = {
       address: "大分縣別府市南的ケ浜町 5-12",
       phone: "+81 977-75-6865",
       desc: "結合公寓式設備與溫泉的現代化住宿，距離 JR 別府站步行約 10 分鐘（約 660 公尺），緊鄰別府塔，生活機能極佳。",
-      booking: { no: "", pin: "", room: "", roomNo: "", guests: "", price: "", paid: "", cancel: "", note: "" }
+      booking: { no: "", room: "", paid: "", note: "" }
     },
     kumamoto: {
       name: "KOKO HOTEL Premier 熊本",
@@ -60,7 +60,7 @@ window.TRIP = {
       address: "熊本縣熊本市中央區櫻町 3-20",
       phone: "+81 96-355-6700",
       desc: "與「櫻町熊本 Sakura Machi」共構。櫻町熊本是座複合式商場，內部不但有商場、美食，同時也是巴士總站，從九州各大城市與機場都可以搭巴士直接抵達飯店。",
-      booking: { no: "", pin: "", room: "", roomNo: "", guests: "", price: "", paid: "", cancel: "", note: "" }
+      booking: { no: "", room: "", paid: "", note: "" }
     }
   },
 
