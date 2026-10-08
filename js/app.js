@@ -4,10 +4,10 @@
 
   /* 地圖搜尋用的日文名稱 */
   var JP = {
-    "熊本機場": "阿蘇くまもと空港", "草千里之濱": "草千里ヶ浜", "阿蘇山本堂 西巖殿寺奧之院": "阿蘇山 西巌殿寺 奥之院",
+    "熊本機場": "阿蘇くまもと空港", "Budget 租車 熊本機場店": "バジェット・レンタカー 熊本空港店", "草千里之濱": "草千里ヶ浜", "阿蘇山本堂 西巖殿寺奧之院": "阿蘇山 西巌殿寺 奥之院",
     "阿蘇中岳火山口": "阿蘇山 中岳火口", "白川水源": "白川水源", "高千穗神社": "高千穂神社", "真名井瀑布": "真名井の滝",
     "高千穗峽": "高千穂峡", "天岩戶神社": "天岩戸神社", "天安河原": "天安河原", "湯之坪街道": "湯の坪街道",
-    "湯布院花卉村": "湯布院フローラルハウス", "湯布院昭和館": "湯布院昭和館", "金鱗湖": "金鱗湖",
+    "湯布院花卉村": "湯布院フローラルヴィレッジ", "湯布院昭和館": "湯布院昭和館", "金鱗湖": "金鱗湖",
     "宇奈岐日女神社": "宇奈岐日女神社", "狹霧台": "狭霧台", "鶴見岳・別府空中纜車": "別府ロープウェイ",
     "竹瓦溫泉": "竹瓦温泉", "別府地獄溫泉巡禮": "別府地獄めぐり 海地獄", "地獄溫泉博物館": "地獄温泉ミュージアム",
     "別府塔": "別府タワー", "九重夢大吊橋": "九重夢大吊橋", "阿蘇神社": "阿蘇神社", "阿蘇牛奶工廠 ASO MILK FACTORY": "ASO MILK FACTORY",
@@ -18,7 +18,7 @@
 
   /* 小地圖用的概略經緯度 [經度, 緯度] */
   var GEO = {
-    "熊本機場": [130.855, 32.837], "草千里之濱": [131.055, 32.885], "阿蘇山本堂 西巖殿寺奧之院": [131.07, 32.885],
+    "熊本機場": [130.855, 32.837], "Budget 租車 熊本機場店": [130.862, 32.839], "草千里之濱": [131.055, 32.885], "阿蘇山本堂 西巖殿寺奧之院": [131.07, 32.885],
     "阿蘇中岳火山口": [131.085, 32.884], "熊本阿蘇萬楓酒店": [131.05, 32.95], "白川水源": [131.10, 32.80],
     "高千穗神社": [131.30, 32.71], "真名井瀑布": [131.305, 32.70], "高千穗峽": [131.305, 32.70], "天岩戶神社": [131.34, 32.74],
     "天安河原": [131.345, 32.745], "湯之坪街道": [131.36, 33.265], "湯布院花卉村": [131.36, 33.265], "湯布院昭和館": [131.36, 33.265],
@@ -91,17 +91,26 @@
   function saveNote(k, v) { try { var o = loadNotes(); o[k] = v; localStorage.setItem(NK, JSON.stringify(o)); } catch (e) {} }
   function noteRow(k, fallback) {
     var o = loadNotes(), v = Object.prototype.hasOwnProperty.call(o, k) ? o[k] : (fallback || "");
-    return ["備註", '<textarea class="note" data-note="' + k + '" rows="2" placeholder="點這裡輸入備註" aria-label="備註">' + esc(v) + "</textarea>", "facts__row--wide"];
+    return ["備註", '<textarea class="note" data-note="' + k + '" rows="2" placeholder="點這裡輸入備註" aria-label="備註">' + esc(v) + "</textarea>" +
+      '<span class="note__saved" aria-live="polite"></span>', "facts__row--wide"];
   }
+  var savedTimer;
   document.addEventListener("input", function (e) {
     var k = e.target.getAttribute && e.target.getAttribute("data-note"); if (!k) return;
     saveNote(k, e.target.value);
     /* 同一間飯店在行程頁和住宿頁各有一份，一起同步 */
     document.querySelectorAll('[data-note="' + k + '"]').forEach(function (t) { if (t !== e.target) t.value = e.target.value; });
+    /* 打完字安靜地確認一聲：已經存好了 */
+    var tag = e.target.nextElementSibling;
+    if (tag) {
+      tag.textContent = "已記在這支手機"; tag.classList.add("is-on");
+      clearTimeout(savedTimer); savedTimer = setTimeout(function () { tag.classList.remove("is-on"); }, 1800);
+    }
   });
 
   function bookingFacts(k, b) {
-    return facts([["訂房編號", val(b.no)], ["房型", val(b.room)], ["付款", val(b.paid)], noteRow("hotel-" + k, b.note)], "facts--grid");
+    return facts([["訂房編號", val(b.no)], ["房型", val(b.room)], ["金額", b.price ? '<span class="num">' + esc(b.price) + "</span>" : val("")], ["付款", val(b.paid)],
+      noteRow("hotel-" + k, b.note)], "facts--grid");
   }
   function nightsLabel(h) {
     var last = h.nights[h.nights.length - 1];
@@ -114,7 +123,8 @@
       '<header class="lodge__head">' + icon("bed") + '<div><h3 class="lodge__name">' + esc(h.name) + "</h3>" +
       '<p class="lodge__nights num">' + nightsLabel(h) + (h.nameAlt ? " · " + esc(h.nameAlt) : "") + "</p></div></header>" +
       '<div class="lodge__body">' +
-      facts([["地址", esc(h.address)], ["電話", '<a class="num" href="tel:' + tel(h.phone) + '">' + esc(h.phone) + "</a>"]]) +
+      facts([["地址", esc(h.address)], ["電話", '<a class="num" href="tel:' + tel(h.phone) + '">' + esc(h.phone) + "</a>"]]
+        .concat(T.mapcodes && T.mapcodes[h.name] ? [["MAPCODE", '<span class="num mc__v">' + esc(T.mapcodes[h.name]) + "</span>"]] : [])) +
       '<div class="actions"><a class="btn btn--day" href="' + mapUrl(h.name + " " + h.address) + '" target="_blank" rel="noopener">' + icon("nav") + "導航</a>" +
       '<a class="btn" href="tel:' + tel(h.phone) + '">' + icon("phone") + "撥打電話</a></div>" +
       (opts && opts.desc ? '<p class="lodge__desc">' + esc(h.desc) + "</p>" : "") +
@@ -127,7 +137,7 @@
   function proj(p) { return [((p[0] - 129.55) * 60).toFixed(1), ((34.02 - p[1]) * 71).toFixed(1)]; }
   function pts(names) { return names.map(function (n) { return GEO[n]; }).filter(Boolean).map(proj); }
   function line(ps) { return ps.map(function (p) { return p.join(","); }).join(" "); }
-  /* 全程依日期分段，各用當天秋色；選中那天加粗，像紅葉前線一路推進 */
+  /* 全程依日期分段，各用當天秋色；選中那天加粗，像季節一路推進 */
   function miniMap(d) {
     var segs = T.days.map(function (x, i) {
       var ps = pts(x.stops.map(function (s) { return s.name; }));
@@ -149,13 +159,19 @@
     return '<a class="btn' + (small ? " btn--sm" : "") + '" href="' + mapUrl(JP[name] || name) + '" target="_blank" rel="noopener">' + icon("pin") + "地圖</a>";
   }
 
+  /* 車用導航 MAPCODE：只有自駕的 Day 1–6 顯示 */
+  function mapcode(name, d) {
+    var c = T.mapcodes && T.mapcodes[name];
+    return c && (!d || d.n <= 6) ? '<span class="mc"><span class="mc__k">MAPCODE</span><span class="mc__v num">' + esc(c) + "</span></span>" : "";
+  }
+
   function stopHtml(d, s, num) {
-    var base = s.kind === "start" || s.kind === "hotel", transfer = s.kind === "transfer";
+    var base = s.kind === "start" || s.kind === "hotel", transfer = s.kind === "transfer", rental = s.kind === "rental";
     var move = s.move ? '<span class="stop__move num">' + icon(s.move.mode === "walk" ? "walk" : "car") + moveText(s.move) + "</span>" : '<span class="stop__move"></span>';
-    var role = s.kind === "start" ? "出發" : s.kind === "hotel" ? "今晚住宿" : transfer ? (s.note || "") : "";
+    var role = s.kind === "start" ? "出發" : s.kind === "hotel" ? "今晚住宿" : transfer || rental ? (s.note || "") : "";
     var media = s.img ? '<span class="stop__img"><img src="images/' + s.img + '.jpg" alt="" loading="lazy" width="56" height="56">' + (num ? '<b class="stop__n">' + num + "</b>" : "") + "</span>"
-      : '<span class="stop__img stop__img--icon">' + icon(base ? "bed" : transfer ? "plane" : "pin") + (num ? '<b class="stop__n">' + num + "</b>" : "") + "</span>";
-    var head = media + '<span class="stop__title"><span class="stop__name">' + esc(s.name) + "</span>" + (role ? '<span class="stop__role">' + esc(role) + "</span>" : "") + "</span>" + move;
+      : '<span class="stop__img stop__img--icon">' + icon(base ? "bed" : transfer ? "plane" : rental ? "car" : "pin") + (num ? '<b class="stop__n">' + num + "</b>" : "") + "</span>";
+    var head = media + '<span class="stop__title"><span class="stop__name">' + esc(s.name) + "</span>" + (role ? '<span class="stop__role">' + esc(role) + "</span>" : "") + (s.kind === "start" ? "" : mapcode(s.name, d)) + "</span>" + move;
     if (!s.text) {
       var acts = s.kind === "start" || s.kind === "hotel" ? "" : navBtn(s.name, true);
       return '<li class="stop' + (base ? " stop--base" : "") + '"><div class="stop__head">' + head + "</div>" + (acts ? '<div class="actions actions--stop">' + acts + "</div>" : "") + "</li>";
@@ -173,7 +189,7 @@
     if (s.table) out += '<table class="tt"><caption>' + esc(s.table.title) + "</caption><thead><tr>" + s.table.head.map(function (h) { return '<th scope="col">' + h + "</th>"; }).join("") +
       "</tr></thead><tbody>" + s.table.rows.map(function (r) { return "<tr>" + r.map(function (c) { return "<td>" + esc(c) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table>";
     if (s.subs) out += '<ol class="subs">' + s.subs.map(function (x, i) {
-      return '<li><img src="images/' + x.img + '.jpg" alt="' + esc(x.name) + '" loading="lazy" width="88" height="66"><h4><b>' + (i + 1) + "</b>" + esc(x.name) + "</h4><p>" + esc(x.text) + '</p><div class="subs__act">' + navBtn(x.name, true) + "</div></li>";
+      return '<li><img src="images/' + x.img + '.jpg" alt="' + esc(x.name) + '" loading="lazy" width="88" height="66"><div><h4><b>' + (i + 1) + "</b>" + esc(x.name) + "</h4>" + mapcode(x.name) + "</div><p>" + esc(x.text) + '</p><div class="subs__act">' + navBtn(x.name, true) + "</div></li>";
     }).join("") + "</ol>";
     out += '<div class="actions">' + navBtn(s.name) + "</div>";
     return out;
@@ -235,15 +251,26 @@
       '<div class="flight__pt flight__pt--end"><span class="flight__code">' + f.toCode + '</span><span class="flight__time num">' + f.arr + '</span><span class="flight__city">' + esc(f.to) + "</span></div></div>" +
       '<p class="flight__note">皆為當地時間，日本比台灣快 1 小時。</p></article>';
   }
+  /* 租車卡：跟航班卡同一種「起點 → 終點」版型，取車在左、還車在右，不會看錯 */
+  function rentEnd(label, when, place, end) {
+    var m = /^(.*?)\s*(\d{1,2}:\d{2})$/.exec(when || "");
+    return '<div class="flight__pt' + (end ? " flight__pt--end" : "") + '"><span class="flight__code">' + label + "</span>" +
+      (m ? '<span class="flight__time num">' + m[2] + '</span><span class="rent__date num">' + esc(m[1]) + "</span>"
+        : '<span class="rent__todo">' + val(when) + "</span>") +
+      '<span class="flight__city">' + val(place) + "</span></div>";
+  }
   function renderTransport() {
     var r = T.rental;
     $("#view-transport").innerHTML =
       '<h2 class="h-sec">航班</h2><div class="flights">' + T.flights.map(flightHtml).join("") + "</div>" +
-      '<h2 class="h-sec">租車</h2><div class="panel">' +
-      facts([["租車公司", val(r.company)], ["預約編號", val(r.bookingNo)], ["取車地點", val(r.pickupPlace)], ["取車時間", val(r.pickupTime)],
-        ["還車地點", val(r.returnPlace)], ["還車時間", val(r.returnTime)], ["車型", val(r.car)], ["保險", val(r.insurance)],
-        ["ETC", val(r.etc)], ["金額", val(r.price)], ["聯絡電話", r.phone ? '<a href="tel:' + tel(r.phone) + '">' + esc(r.phone) + "</a>" : val("")], noteRow("rental", r.note)], "facts--grid") +
-      '<p class="hint">租車資料尚未填入，補上後會顯示在這裡。</p></div>';
+      '<h2 class="h-sec">租車</h2><article class="flight rent"><header class="flight__head"><b>' + val(r.company) + "</b>" +
+      (r.phone ? '<a class="rent__tel num" href="tel:' + tel(r.phone) + '">' + icon("phone") + esc(r.phone) + "</a>" : "") + "</header>" +
+      '<div class="flight__leg">' + rentEnd("取車", r.pickupTime, r.pickupPlace) +
+      '<div class="flight__mid">' + icon("car") + "</div>" + rentEnd("還車", r.returnTime, r.returnPlace, true) + "</div>" +
+      '<div class="rent__body">' +
+      facts([["預約編號", val(r.bookingNo)], ["車型", val(r.car)], ["保險", val(r.insurance)], ["ETC", val(r.etc)],
+        ["金額", r.price ? '<span class="num">' + esc(r.price) + "</span>" : val("")], noteRow("rental", r.note)], "facts--grid") +
+      '<p class="hint">標示「待填」的欄位，補上後會顯示在這裡。</p></div></article>';
   }
 
   /* ── 住宿 ───────────────────────────── */
@@ -277,12 +304,19 @@
     $("#view-info").innerHTML =
       '<h2 class="h-sec">旅遊須知</h2><div class="infogrid">' + info + "</div>" +
       '<h2 class="h-sec">當地美食</h2><div class="food">' + food + "</div>" +
-      '<h2 class="h-sec">行前清單</h2><div class="check"><p class="check__bar"><span id="ck-count" class="num"></span><span class="check__meter"><i id="ck-meter"></i></span></p>' +
+      '<h2 class="h-sec">行前清單</h2><div class="check"><div class="check__bar"><span id="ck-count" class="check__count num" aria-live="polite"></span>' +
+      /* 打包進度沿著和色色階走：由 Day 1 苔綠一格格推進到 Day 8 葡萄鼠 */
+      '<span class="check__meter" aria-hidden="true">' + DAYC.map(function (c, i) { return '<i style="--c:' + c.chip + ";--i:" + i + '"><b></b></i>'; }).join("") + "</span></div>" +
+      '<p class="check__done" id="ck-done" hidden>' + icon("plane") + '<span class="num">' + T.flights[0].label + " " + T.flights[0].dep + " " + esc(T.flights[0].from) + "機場見，<span class=\"nw\">" + esc(T.flights[0].airline) + " " + T.flights[0].no + "</span></span></p>" +
       '<div class="check__groups">' + groups + '</div><div class="check__foot"><button class="btn btn--sm btn--quiet" type="button" id="ck-reset">清除全部勾選</button></div></div>';
+    var segs = document.querySelectorAll(".check__meter b");
     var update = function () {
-      var n = document.querySelectorAll("[data-ck]:checked").length;
-      $("#ck-count").textContent = "已準備 " + n + " / " + total;
-      $("#ck-meter").style.transform = "scaleX(" + (n / total) + ")";
+      var n = document.querySelectorAll("[data-ck]:checked").length, done = n === total;
+      $("#ck-count").innerHTML = done ? icon("check") + "全部準備好了" : "已準備 " + n + " / " + total;
+      $("#ck-count").classList.toggle("is-done", done);
+      $("#ck-done").hidden = !done;
+      var f = n / total * segs.length;
+      segs.forEach(function (b, i) { b.style.transform = "scaleX(" + Math.max(0, Math.min(1, f - i)) + ")"; });
     };
     update();
     $("#view-info").addEventListener("change", function (e) {
@@ -324,11 +358,17 @@
   route();
 
   /* ── 離線 ───────────────────────────── */
-  function net() { $("#net").hidden = navigator.onLine; }
+  /* 山裡斷訊時：網站已存進手機的話，就直接告訴旅伴行程照常可看 */
+  function net() {
+    var cached = "serviceWorker" in navigator && navigator.serviceWorker.controller;
+    $("#net-text").textContent = cached ? "離線・行程照常可看" : "離線中";
+    $("#net").hidden = navigator.onLine;
+  }
   window.addEventListener("online", net); window.addEventListener("offline", net); net();
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
     navigator.serviceWorker.register("sw.js").then(function () {
-      navigator.serviceWorker.ready.then(function () { $("#sw-status").textContent = "已儲存到這支手機，沒有網路也能開啟。"; });
+      navigator.serviceWorker.ready.then(function () { $("#sw-status").textContent = "已儲存到這支手機，沒有網路也能開啟。"; net(); });
+      navigator.serviceWorker.addEventListener("controllerchange", net);
     }).catch(function () {});
   }
 })();

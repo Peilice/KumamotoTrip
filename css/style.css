@@ -105,7 +105,7 @@ summary::-webkit-details-marker { display: none; }
 
 main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 .view { padding: var(--s4) 0 var(--s7); }
-.view[hidden] { display: none; }
+[hidden] { display: none !important; }
 
 .h-sec { font: 900 22px/1.3 var(--round); margin: var(--s7) 0 var(--s4); padding-bottom: var(--s2); border-bottom: 2px solid var(--ink); }
 .h-sec:first-child { margin-top: var(--s3); }
@@ -166,6 +166,11 @@ main { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 .stop__move { display: inline-flex; align-items: center; gap: 4px; justify-self: end; font-size: 12.5px; font-weight: 700; color: var(--day); white-space: nowrap; }
 .stop__move .ic { width: 16px; height: 16px; }
 summary.stop__head:hover .stop__name { color: var(--day); }
+/* 車用導航 MAPCODE：不用展開就看得到，數字等寬好對照輸入 */
+.mc { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; margin-top: 3px; line-height: 1.3; }
+.mc__k { font: 700 10.5px/1.5 var(--round); letter-spacing: .06em; color: var(--g-600); }
+.mc__v { font: 700 14px/1.3 var(--body); color: var(--ink); letter-spacing: .02em; white-space: nowrap; user-select: all; }
+.subs .mc { margin-top: 4px; }
 .actions--stop { margin: calc(var(--s2) * -1) 0 var(--s3) calc(56px + var(--s3)); }
 
 .stop__detail { padding: 0 0 var(--s5); }
@@ -227,6 +232,8 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 .note::placeholder { color: var(--g-600); }
 .note:hover { border-color: var(--g-600); }
 .note:focus { outline: none; border-style: solid; border-color: var(--day); background: var(--white); }
+.note__saved { display: block; min-height: 1.5em; margin-top: 2px; font-size: 12.5px; line-height: 1.5; color: var(--g-600); opacity: 0; transition: opacity .5s var(--ease); }
+.note__saved.is-on { opacity: 1; transition-duration: .15s; }
 .todo { display: inline-block; padding: 0 10px; border: 1.5px dashed var(--g-400); border-radius: 99px; color: var(--g-600); font-size: 12px; line-height: 1.75; font-weight: 700; }
 .slot { margin-top: var(--s4); border-top: 1px solid var(--g-200); padding-top: var(--s2); }
 .slot > summary { display: flex; align-items: center; gap: var(--s2); min-height: 44px; font: 900 15px/1.3 var(--round); }
@@ -253,6 +260,25 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 .flight__mid { color: var(--g-600); display: grid; justify-items: center; gap: 2px; font-size: 12px; }
 .flight__mid .ic { width: 22px; height: 22px; color: var(--day); }
 .flight__note { padding: 0 var(--s4) var(--s3); margin: 0; font-size: 12.5px; color: var(--g-600); }
+/* 租車卡：沿用航班卡的起訖版型 */
+.rent .flight__head a { font-weight: 700; }
+.rent__tel { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; }
+.rent__tel .ic { width: 15px; height: 15px; }
+.rent .flight__code { color: var(--day); }
+.rent__date { font-size: 13px; font-weight: 700; color: var(--ink); }
+.rent__todo { padding: 8px 0 4px; }
+.rent .flight__leg { align-items: start; }
+.rent .flight__mid { align-self: start; margin-top: 26px; min-width: 64px; position: relative; }
+.rent .flight__mid::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1.5px dashed var(--g-400); }
+.rent .flight__mid .ic { position: relative; width: 26px; height: 26px; padding: 0 4px; box-sizing: content-box; background: var(--white); }
+.rent__body { padding: var(--s4); border-top: 1px solid var(--g-200); }
+@media (min-width: 860px) {
+  .rent { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .rent .flight__head { grid-column: 1 / -1; }
+  .rent .flight__leg { padding: var(--s5) var(--s4); align-self: start; }
+  .rent__body { border-top: 0; border-left: 1px solid var(--g-200); }
+  .rent__body .facts--grid { grid-template-columns: 1fr 1fr; }
+}
 
 .panel { border: 1px solid var(--g-200); border-radius: var(--r-lg); background: var(--white); padding: var(--s4); }
 .hint { font-size: 13px; color: var(--g-600); margin: var(--s3) 0 0; }
@@ -283,8 +309,19 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 .food li span { color: var(--g-600); font-size: 13.5px; line-height: 1.65; display: block; }
 
 .check__bar { display: flex; align-items: center; gap: var(--s3); margin: 0 0 var(--s4); font-size: 14px; font-weight: 700; color: var(--g-800); }
-.check__meter { flex: 1; height: 10px; background: var(--g-100); border-radius: 99px; overflow: hidden; max-width: 320px; }
-.check__meter i { display: block; height: 100%; background: var(--day); transform-origin: left; transform: scaleX(0); transition: transform .4s var(--ease); }
+.check__count { display: inline-flex; align-items: center; gap: 4px; min-width: 7.5em; white-space: nowrap; }
+.check__count .ic { width: 18px; height: 18px; color: var(--day); stroke-width: 2.4; }
+.check__count.is-done { font-family: var(--round); color: var(--ink); }
+/* 和色色階進度條：8 格各是一天的和色，跟日期按鈕同一條色階 */
+.check__meter { flex: 1; max-width: 320px; height: 10px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; }
+.check__meter i { background: var(--g-100); overflow: hidden; }
+.check__meter i:first-child { border-radius: 99px 0 0 99px; }
+.check__meter i:last-child { border-radius: 0 99px 99px 0; }
+.check__meter b { display: block; height: 100%; background: var(--c); transform-origin: left; transform: scaleX(0); transition: transform .35s var(--ease); }
+.check__done { display: flex; align-items: center; gap: var(--s2); margin: calc(-1 * var(--s2)) 0 var(--s4); padding: 10px 14px; max-width: none;
+  background: var(--day-soft); color: var(--day); border-radius: var(--r-md); font: 700 14.5px/1.5 var(--round); }
+.check__done .ic { width: 20px; height: 20px; flex: none; }
+.check__done .nw { white-space: nowrap; }
 .check__groups { display: grid; gap: var(--s5); }
 @media (min-width: 720px) { .check__groups { grid-template-columns: 1fr 1fr; } }
 .check__group h3 { font: 900 16px/1.3 var(--round); margin: 0 0 var(--s1); }
@@ -298,11 +335,17 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 
 .foot { max-width: var(--max); margin: 0 auto; padding: var(--s5) var(--gutter) var(--s6); color: var(--g-600); font-size: 12.5px; border-top: 1px solid var(--g-200); }
 .foot p { margin: 0 0 4px; max-width: none; }
+/* 頁尾只剩離線狀態；還沒存進手機時整條收起來，不留空白框 */
+.foot:not(:has(p:not(:empty))) { display: none; }
 
 /* 換日時：頁首與地圖的秋色平滑轉換，清單淡入 */
 @media (prefers-reduced-motion: no-preference) {
   .stops { animation: rise .45s var(--ease) both; }
+  /* 行前清單勾滿：季節從苔綠一路亮到葡萄鼠，出發那一行隨後浮上來 */
+  .check__count.is-done + .check__meter b { animation: front .7s var(--ease) both; animation-delay: calc(var(--i) * 70ms); }
+  .check__done:not([hidden]) { animation: rise .5s var(--ease) .55s both; }
 }
+@keyframes front { 0% { filter: none; } 35% { filter: brightness(1.45) saturate(1.1); } 100% { filter: none; } }
 @keyframes rise { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .mast, .minimap__seg { transition: none; } }
 
