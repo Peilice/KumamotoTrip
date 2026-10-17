@@ -486,7 +486,7 @@
     var bal = '<h2 class="h-sec">分帳</h2><div class="ledbal">' + n.map(function (nm, i) {
       var d = b.bal[i], st = d > 0.5 ? "要收 " + fmtT(d * rate) : d < -0.5 ? "要付 " + fmtT(-d * rate) : "打平";
       return '<div class="ledbal__row"><span class="ledbal__name">' + esc(nm) + (i === me ? "<small>我</small>" : "") + "</span>" +
-        '<span class="ledbal__d num' + (d > 0.5 ? " is-get" : "") + '">' + st + "</span>" +
+        '<span class="ledbal__d num' + (d > 0.5 ? " is-get" : d < -0.5 ? " is-pay" : "") + '">' + st + "</span>" +
         '<span class="ledbal__sub num">付了 ' + fmtJ(b.paid[i]) + "・應分攤 " + fmtJ(b.owe[i]) + "</span></div>";
     }).join("") + "</div>" +
       (tx.length ? '<ol class="ledtx" aria-label="建議的轉帳">' + tx.map(function (t) {
