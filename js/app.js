@@ -74,7 +74,7 @@
       var d = T.days[state.day - 1];
       html = '<span class="u"><b>Day ' + d.n + "</b>" + esc(d.from) + " → " + esc(d.via || d.to) + '</span> <span class="u"><span class="sep">·</span>' + md(d.date) + "（" + d.dow + "）</span>";
     } else {
-      html = "<b>" + { transport: "交通", stay: "住宿", info: "資訊" }[state.tab] + "</b>" + { transport: "航班與租車", stay: "四間飯店・七晚", info: "氣候、美食與行前清單" }[state.tab];
+      html = "<b>" + { transport: "交通", stay: "住宿", info: "資訊", ledger: "記帳" }[state.tab] + "</b>" + { transport: "航班與租車", stay: "四間飯店・七晚", info: "氣候、美食與行前清單", ledger: "四人分帳・日圓與台幣" }[state.tab];
     }
     $("#guide").innerHTML = html;
   }
@@ -225,6 +225,7 @@
     var aside = "";
     if (d.hotel) aside += lodgeBlock(d.hotel, { desc: false });
     if (d.n === 1 || d.n === 8) aside += '<section class="aside"><h3 class="h-sub">今日航班</h3>' + flightHtml(T.flights[d.n === 1 ? 0 : 1]) + "</section>";
+    aside += daySpend(d);
     if (d.intro) aside += '<section class="aside"><h3 class="h-sub">' + esc(d.intro.title) + "</h3>" + d.intro.text.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</section>";
     if (d.reading) aside += '<section class="aside"><h3 class="h-sub">' + esc(d.reading.title) + "</h3><p>" + esc(d.reading.text[0]) + "</p>" +
       '<details class="more"><summary>繼續閱讀' + icon("chev", "chev") + "</summary>" + d.reading.text.slice(1).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</details></section>";
@@ -339,20 +340,324 @@
     });
   }
 
+  /* ── 記帳：四人分帳 ─────────────────────
+     每個人記的帳只存在自己手機，用「同步碼」互傳合併。
+     帳本依記帳人分開存，每人只改自己那一本；合併時整本以較新的為準，不會互相蓋掉。 */
+  var LK = "kyushu2026-ledger";
+  var CATS = ["餐飲", "交通", "住宿", "門票", "購物", "其他"];
+  function loadLedger() {
+    var o; try { o = JSON.parse(localStorage.getItem(LK)); } catch (e) {}
+    o = o || {}; o.cfg = o.cfg || {}; o.books = o.books || {};
+    if (!o.cfg.names) { o.cfg.names = ["旅伴 1", "旅伴 2", "旅伴 3", "旅伴 4"]; o.cfg.namesAt = 0; }
+    return o;
+  }
+  var L = loadLedger();
+  function saveLedger() { try { localStorage.setItem(LK, JSON.stringify(L)); } catch (e) {} }
+  function ledgerReady() { return L.cfg.me != null && L.cfg.rate > 0; }
+  function everyone() { return L.cfg.names.map(function (_, i) { return i; }); }
+  function allItems() {
+    var out = [];
+    Object.keys(L.books).forEach(function (k) {
+      (L.books[k].items || []).forEach(function (it) { var x = { owner: +k }; for (var p in it) x[p] = it[p]; out.push(x); });
+    });
+    return out.sort(function (a, b) { return a.day - b.day || a.t - b.t; });
+  }
+  function jpy(it) { return it.cur === "TWD" ? it.amt / L.cfg.rate : it.amt; }
+  function sumJ(items) { return items.reduce(function (s, it) { return s + jpy(it); }, 0); }
+  function fmtJ(n) { return "¥" + Math.round(n).toLocaleString("en-US"); }
+  function fmtT(n) { return "NT$" + Math.round(n).toLocaleString("en-US"); }
+  function fmtAmt(it) { return it.cur === "TWD" ? fmtT(it.amt) : fmtJ(it.amt); }
+  function dayName(n) { return n ? "Day " + n + " · " + md(T.days[n - 1].date) : "行前"; }
+  function defaultDay() { return todayDay ? todayDay.n : TODAY < T.start ? 0 : 8; }
+
+  /* 每人付了多少、該分攤多少；正數是要收回，負數是要付出 */
+  function balances(items) {
+    var paid = everyone().map(function () { return 0; }), owe = paid.slice();
+    items.forEach(function (it) {
+      var j = jpy(it), s = it.split.length ? it.split : everyone();
+      paid[it.by] += j;
+      s.forEach(function (p) { owe[p] += j / s.length; });
+    });
+    return { paid: paid, owe: owe, bal: paid.map(function (p, i) { return p - owe[i]; }) };
+  }
+  /* 欠最多的先付給該收最多的，轉帳次數最少 */
+  function transfers(bal) {
+    var d = [], c = [], out = [];
+    bal.forEach(function (b, i) { if (b < -0.5) d.push({ i: i, v: -b }); else if (b > 0.5) c.push({ i: i, v: b }); });
+    var big = function (a, b) { return b.v - a.v; }; d.sort(big); c.sort(big);
+    while (d.length && c.length) {
+      var v = Math.min(d[0].v, c[0].v);
+      out.push([d[0].i, c[0].i, v]);
+      d[0].v -= v; c[0].v -= v;
+      if (d[0].v < 0.5) d.shift();
+      if (c[0].v < 0.5) c.shift();
+    }
+    return out;
+  }
+
+  /* 訂房、租車手冊裡已有金額的，列成行前建議，點一下帶進表單 */
+  function presets() {
+    var num = function (s) { var m = /[\d,]+/.exec(s || ""); return m ? +m[0].replace(/,/g, "") : 0; };
+    var list = [];
+    if (num(T.rental.price)) list.push({ note: T.rental.company, cat: "交通", amt: num(T.rental.price) });
+    Object.keys(T.hotels).forEach(function (k) {
+      var h = T.hotels[k], a = num(h.booking.price);
+      if (a) list.push({ note: h.name, cat: "住宿", amt: a });
+    });
+    return list;
+  }
+
+  /* 同步碼：整份帳本壓縮後轉成文字，可直接貼到 LINE 群組 */
+  function zhErr(m) { var e = new Error(m); e.zh = true; return e; }
+  function toB64(u) { var s = ""; for (var i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+  function fromB64(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function pipe(u, stream) { return new Response(new Blob([u]).stream().pipeThrough(stream)).arrayBuffer().then(function (b) { return new Uint8Array(b); }); }
+  function encodeSync() {
+    var u = new TextEncoder().encode(JSON.stringify({ v: 1, names: L.cfg.names, namesAt: L.cfg.namesAt, rate: L.cfg.rate, rateAt: L.cfg.rateAt, books: L.books }));
+    if (!window.CompressionStream) return Promise.resolve("KY26." + toB64(u));
+    return pipe(u, new CompressionStream("deflate-raw")).then(function (z) { return "KY26z." + toB64(z); });
+  }
+  function decodeSync(text) {
+    return Promise.resolve().then(function () {
+      var m = /KY26(z?)\.([A-Za-z0-9+\/=]+)/.exec(text.replace(/\s+/g, ""));
+      if (!m) throw zhErr("找不到同步碼，請確認有完整複製");
+      var u = fromB64(m[2]);
+      if (!m[1]) return u;
+      if (!window.DecompressionStream) throw zhErr("這支手機的瀏覽器太舊，讀不了同步碼，請先更新系統");
+      return pipe(u, new DecompressionStream("deflate-raw"));
+    }).then(function (b) { return JSON.parse(new TextDecoder().decode(b)); });
+  }
+  function mergeSync(d) {
+    if (!d || d.v !== 1 || !d.books) throw zhErr("同步碼格式不對");
+    var got = 0;
+    if (Array.isArray(d.names) && d.names.length === L.cfg.names.length && (+d.namesAt || 0) > (L.cfg.namesAt || 0)) {
+      L.cfg.names = d.names.map(function (x) { return String(x).slice(0, 8); }); L.cfg.namesAt = +d.namesAt;
+    }
+    if (+d.rate > 0 && (!(L.cfg.rate > 0) || (d.rateAt || 0) > (L.cfg.rateAt || 0))) { L.cfg.rate = +d.rate; L.cfg.rateAt = +d.rateAt || 0; }
+    var n = L.cfg.names.length, ok = function (p) { return p >= 0 && p < n; };
+    Object.keys(d.books).forEach(function (k) {
+      var b = d.books[k], had = L.books[k];
+      if (!ok(+k) || !b || !Array.isArray(b.items) || (had && !(+b.at > had.at))) return;
+      /* 別人手機來的資料，數字欄位一律轉型、範圍不對的丟掉 */
+      L.books[k] = { at: +b.at, items: b.items.map(function (it) {
+        return { id: String(it.id), t: +it.t || 0, day: +it.day, amt: +it.amt, cur: it.cur === "TWD" ? "TWD" : "JPY", cat: String(it.cat || "其他"), note: String(it.note || ""),
+          by: +it.by, split: (Array.isArray(it.split) ? it.split : []).map(Number).filter(ok) };
+      }).filter(function (it) { return it.amt > 0 && it.day >= 0 && it.day <= T.days.length && ok(it.by); }) };
+      got++;
+    });
+    saveLedger();
+    return got;
+  }
+
+  function chip(type, name, value, label, on) {
+    return '<label class="chip"><input type="' + type + '" name="' + name + '" value="' + value + '"' + (on ? " checked" : "") + "><span>" + label + "</span></label>";
+  }
+  function cfgForm(submit) {
+    var c = L.cfg;
+    return '<form class="cfg" id="ld-cfg" novalidate><fieldset class="chips cfg__names"><legend>四位旅伴，並選出哪一位是你</legend>' +
+      c.names.map(function (nm, i) {
+        return '<div class="cfg__row"><input class="fld__in" name="nm' + i + '" value="' + (c.namesAt ? esc(nm) : "") + '" placeholder="旅伴 ' + (i + 1) + '" maxlength="8" aria-label="旅伴 ' + (i + 1) + ' 的名字">' +
+          chip("radio", "me", i, "是我", c.me === i) + "</div>";
+      }).join("") + "</fieldset>" +
+      '<label class="fld"><span>匯率：1 日圓 = 多少台幣</span><input name="rate" inputmode="decimal" autocomplete="off" value="' + (c.rate || "") + '" placeholder="例如 0.21"></label>' +
+      '<p class="hint">匯率全程固定用這個數字換算，同步時會一起帶給旅伴，所以只要一個人設定。</p>' +
+      '<p class="ledf__err" id="ld-cfg-err" aria-live="polite"></p>' +
+      '<div class="actions"><button class="btn btn--day" type="submit">' + submit + "</button></div></form>";
+  }
+  function syncBox() {
+    return '<label class="fld"><span>貼上旅伴的同步碼</span><textarea class="note" id="ld-in" rows="3" placeholder="KY26…"></textarea></label>' +
+      '<div class="actions"><button class="btn" type="button" data-act="import">合併</button></div>' +
+      '<p class="ledmsg" id="ld-msg" aria-live="polite"></p>';
+  }
+
+  function renderLedger() {
+    var v = $("#view-ledger");
+    if (!ledgerReady()) {
+      v.innerHTML = '<h2 class="h-sec">記帳</h2><section class="ledsum"><p class="ledsum__k">四人分帳，先設定一次</p>' + cfgForm("開始記帳") + "</section>" +
+        '<h2 class="h-sec">已經有旅伴的同步碼？</h2><div class="ledsync"><p>貼上後名字和匯率會自動帶入，你只要選出哪一位是自己。</p>' + syncBox() + "</div>";
+      return;
+    }
+    var n = L.cfg.names, me = L.cfg.me, rate = L.cfg.rate, items = allItems(), total = sumJ(items), b = balances(items), tx = transfers(b.bal);
+
+    var sum = '<h2 class="h-sec">記帳</h2><section class="ledsum"><p class="ledsum__k">全團花費</p><p class="ledsum__v num">' + fmtJ(total) + "</p>" +
+      '<p class="ledsum__t num">≈ ' + fmtT(total * rate) + "・匯率 1 日圓 = " + rate + " 台幣</p>" +
+      '<div class="actions"><button class="btn btn--day" type="button" data-act="add">' + icon("plus") + "記一筆</button></div></section>";
+
+    var bal = '<h2 class="h-sec">分帳</h2><div class="ledbal">' + n.map(function (nm, i) {
+      var d = b.bal[i], st = d > 0.5 ? "要收 " + fmtT(d * rate) : d < -0.5 ? "要付 " + fmtT(-d * rate) : "打平";
+      return '<div class="ledbal__row"><span class="ledbal__name">' + esc(nm) + (i === me ? "<small>我</small>" : "") + "</span>" +
+        '<span class="ledbal__d num' + (d > 0.5 ? " is-get" : "") + '">' + st + "</span>" +
+        '<span class="ledbal__sub num">付了 ' + fmtJ(b.paid[i]) + "・應分攤 " + fmtJ(b.owe[i]) + "</span></div>";
+    }).join("") + "</div>" +
+      (tx.length ? '<ol class="ledtx" aria-label="建議的轉帳">' + tx.map(function (t) {
+        return "<li><b>" + esc(n[t[0]]) + '</b><span aria-label="付給">→</span><b>' + esc(n[t[1]]) + '</b><span class="num">' + fmtT(t[2] * rate) + "</span><small class=\"num\">" + fmtJ(t[2]) + "</small></li>";
+      }).join("") + "</ol>" : '<p class="ledempty">目前大家打平，不用互相轉帳。</p>') +
+      '<p class="hint">以台幣結算，四捨五入到整數；只算到已經同步進這支手機的帳。</p>';
+
+    var pre = presets().filter(function (p) { return !items.some(function (it) { return it.note === p.note; }); });
+    var days = [0].concat(T.days.map(function (d) { return d.n; })).map(function (dn) {
+      var its = items.filter(function (it) { return it.day === dn; });
+      var sug = dn === 0 ? pre : [];
+      if (!its.length && !sug.length) return "";
+      var rows = its.map(function (it) {
+        var s = it.split.length && it.split.length < n.length ? it.split.map(function (p) { return esc(n[p]); }).join("、") + " 分" : n.length + " 人分";
+        var meta = esc(n[it.by]) + " 付・" + s + (it.owner === me ? "" : "・" + esc(n[it.owner]) + " 記");
+        var inner = '<span class="led__cat">' + esc(it.cat) + '</span><span class="led__main"><span class="led__note">' + esc(it.note || it.cat) + '</span><span class="led__meta">' + meta + "</span></span>" +
+          '<span class="led__amt num">' + fmtAmt(it) + "</span>";
+        return it.owner === me ? '<li><button class="led__item" type="button" data-edit="' + esc(it.id) + '" aria-label="修改：' + esc(it.note || it.cat) + " " + fmtAmt(it) + '">' + inner + "</button></li>"
+          : '<li><div class="led__item">' + inner + "</div></li>";
+      }).concat(sug.map(function (p) {
+        return '<li><button class="led__item led__item--sug" type="button" data-pre="' + esc(p.note) + '"><span class="led__cat">' + p.cat + '</span><span class="led__main"><span class="led__note">' + esc(p.note) +
+          '</span><span class="led__meta">手冊已有金額，點一下記入</span></span><span class="led__amt num">' + fmtJ(p.amt) + "</span></button></li>";
+      })).join("");
+      return '<section class="ledday" style="--c:' + (dn ? DAYC[dn - 1].chip : "var(--g-400)") + '"><h3 class="ledday__h">' + dayName(dn) +
+        (its.length ? '<span class="num">' + fmtJ(sumJ(its)) + "</span>" : "") + '</h3><ul class="ledlist">' + rows + "</ul></section>";
+    }).join("");
+    var list = '<h2 class="h-sec">明細</h2>' + (items.length ? "" : '<p class="ledempty">還沒有任何一筆。自己記的帳點一下就能修改。</p>') + days;
+
+    var who = '<ul class="ledwho">' + n.map(function (nm, i) {
+      var bk = L.books[i];
+      return "<li><b>" + esc(nm) + (i === me ? "（我）" : "") + "</b>" + (bk && bk.at ? '<span class="num">' + bk.items.length + " 筆・" +
+        new Date(bk.at).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }) + "</span>" : "還沒同步進來") + "</li>";
+    }).join("") + "</ul>";
+    var sync = '<h2 class="h-sec">同步</h2><div class="ledsync"><p>每個人記的帳只存在自己的手機。把同步碼傳到群組，旅伴貼上就會合併；同步碼也會帶上你手上其他人的帳，所以只要有人轉傳，大家都會收到。</p>' + who +
+      '<div class="actions"><button class="btn btn--day" type="button" data-act="share">' + icon("share") + "分享同步碼</button></div>" +
+      '<textarea class="note" id="ld-out" rows="3" readonly hidden aria-label="同步碼"></textarea>' + syncBox() + "</div>" +
+      '<details class="slot"><summary>' + icon("wallet") + "設定：名字、我是誰、匯率" + icon("chev", "chev") + "</summary>" + cfgForm("儲存設定") + "</details>";
+
+    v.innerHTML = sum + bal + list + sync;
+  }
+
+  /* 記一筆／修改：從底部滑出的表單 */
+  var dlg = document.createElement("dialog");
+  dlg.className = "ledf"; dlg.setAttribute("aria-labelledby", "lf-title");
+  document.body.appendChild(dlg);
+  var editing = null;
+  function openForm(it) {
+    var n = L.cfg.names, f = it || {};
+    editing = f.id ? f : null;
+    var split = f.split && f.split.length ? f.split : everyone(), by = f.by != null ? f.by : L.cfg.me, day = f.day != null ? f.day : defaultDay();
+    dlg.innerHTML = '<form class="ledf__form" id="lf" novalidate>' +
+      '<header class="ledf__head"><h2 id="lf-title">' + (editing ? "修改這筆" : "記一筆") + '</h2><button class="ledf__x" type="button" data-act="close" aria-label="關閉">×</button></header>' +
+      '<div class="ledf__amt"><input name="amt" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="金額" value="' + (f.amt || "") + '">' +
+      '<div class="chips" role="radiogroup" aria-label="幣別">' + chip("radio", "cur", "JPY", "日圓", f.cur !== "TWD") + chip("radio", "cur", "TWD", "台幣", f.cur === "TWD") + "</div></div>" +
+      '<fieldset class="chips"><legend>類別</legend>' + CATS.map(function (c) { return chip("radio", "cat", c, c, (f.cat || "餐飲") === c); }).join("") + "</fieldset>" +
+      '<label class="fld"><span>項目</span><input name="note" maxlength="40" autocomplete="off" placeholder="例：一蘭拉麵、加油" value="' + esc(f.note || "") + '"></label>' +
+      '<label class="fld"><span>日期</span><select name="day">' + [0].concat(T.days.map(function (d) { return d.n; })).map(function (dn) {
+        return '<option value="' + dn + '"' + (dn === day ? " selected" : "") + ">" + dayName(dn) + "</option>";
+      }).join("") + "</select></label>" +
+      '<fieldset class="chips"><legend>誰付的</legend>' + n.map(function (nm, i) { return chip("radio", "by", i, esc(nm), by === i); }).join("") + "</fieldset>" +
+      '<fieldset class="chips"><legend>誰分攤（平均分）</legend>' + n.map(function (nm, i) { return chip("checkbox", "split", i, esc(nm), split.indexOf(i) > -1); }).join("") + "</fieldset>" +
+      '<p class="ledf__err" id="lf-err" aria-live="polite"></p>' +
+      '<div class="actions"><button class="btn btn--day" type="submit">' + icon("check") + "儲存</button>" +
+      '<button class="btn btn--quiet" type="button" data-act="close">取消</button>' +
+      (editing ? '<button class="btn btn--quiet ledf__del" type="button" data-act="del">刪除</button>' : "") + "</div></form>";
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    if (!editing) dlg.querySelector('[name="amt"]').focus();
+  }
+  function closeForm() { if (dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
+  function myBook() { return L.books[L.cfg.me] || (L.books[L.cfg.me] = { at: 0, items: [] }); }
+  function ledgerChanged() { saveLedger(); renderLedger(); renderDay(); }
+
+  dlg.addEventListener("click", function (e) {
+    if (e.target === dlg) return closeForm();
+    var a = e.target.closest("[data-act]"); if (!a) return;
+    if (a.getAttribute("data-act") === "close") closeForm();
+    if (a.getAttribute("data-act") === "del" && editing && confirm("確定要刪除這一筆嗎？")) {
+      var bk = myBook(); bk.items = bk.items.filter(function (x) { return x.id !== editing.id; }); bk.at = Date.now();
+      closeForm(); ledgerChanged();
+    }
+  });
+  dlg.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var fm = e.target, err = $("#lf-err", fm);
+    var amt = parseFloat(fm.amt.value.replace(/[,，\s]/g, ""));
+    var split = [].map.call(fm.querySelectorAll('[name="split"]:checked'), function (c) { return +c.value; });
+    if (!(amt > 0)) { err.textContent = "請輸入金額"; fm.amt.focus(); return; }
+    if (!split.length) { err.textContent = "至少要有一個人分攤"; return; }
+    var it = {
+      id: editing ? editing.id : Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      t: editing ? editing.t : Date.now(), day: +fm.day.value, amt: amt, cur: fm.querySelector('[name="cur"]:checked').value,
+      cat: fm.querySelector('[name="cat"]:checked').value, note: fm.note.value.trim(), by: +fm.querySelector('[name="by"]:checked').value,
+      split: split.length === L.cfg.names.length ? [] : split
+    };
+    var bk = myBook();
+    if (editing) bk.items = bk.items.map(function (x) { return x.id === it.id ? it : x; }); else bk.items.push(it);
+    bk.at = Date.now();
+    closeForm(); ledgerChanged();
+  });
+
+  function ledMsg(t) { var m = $("#ld-msg"); if (m) m.textContent = t; }
+  $("#view-ledger").addEventListener("click", function (e) {
+    var ed = e.target.closest("[data-edit]"), pr = e.target.closest("[data-pre]"), a = e.target.closest("[data-act]");
+    if (ed) {
+      var id = ed.getAttribute("data-edit");
+      openForm((myBook().items.filter(function (x) { return x.id === id; }))[0]);
+    } else if (pr) {
+      var p = presets().filter(function (x) { return x.note === pr.getAttribute("data-pre"); })[0];
+      openForm({ note: p.note, cat: p.cat, amt: p.amt, day: 0 });
+    } else if (a && a.getAttribute("data-act") === "add") openForm();
+    else if (a && a.getAttribute("data-act") === "share") {
+      encodeSync().then(function (code) {
+        var text = "九州記帳同步碼（到行程網站「記帳」頁貼上）\n" + code;
+        if (navigator.share) return navigator.share({ text: text }).catch(function () {});
+        return navigator.clipboard.writeText(text).then(function () { ledMsg("已複製，貼到群組就好"); });
+      }).catch(function () {
+        /* 不能分享也不能複製時，直接把同步碼攤出來讓人手動複製 */
+        encodeSync().then(function (code) { var o = $("#ld-out"); o.value = code; o.hidden = false; o.select(); ledMsg("請長按上面的同步碼手動複製"); });
+      });
+    } else if (a && a.getAttribute("data-act") === "import") {
+      decodeSync($("#ld-in").value).then(function (d) {
+        var got = mergeSync(d);
+        renderLedger(); renderDay();
+        ledMsg(got ? "已合併 " + got + " 本帳" : "已經是最新的，沒有新資料");
+      }).catch(function (er) { ledMsg(er.zh ? er.message : "同步碼讀不出來，請確認有完整複製"); });
+    }
+  });
+  $("#view-ledger").addEventListener("submit", function (e) {
+    if (e.target.id !== "ld-cfg") return;
+    e.preventDefault();
+    var fm = e.target, err = $("#ld-cfg-err"), c = L.cfg;
+    var names = c.names.map(function (_, i) { return fm["nm" + i].value.trim() || "旅伴 " + (i + 1); });
+    var me = fm.querySelector('[name="me"]:checked'), rate = parseFloat(fm.rate.value.replace(/[,，\s]/g, ""));
+    if (!me) { err.textContent = "請選出哪一位是你"; return; }
+    if (!(rate > 0 && rate < 10)) { err.textContent = "請輸入匯率，例如 0.21"; fm.rate.focus(); return; }
+    if (names.join("|") !== c.names.join("|")) { c.names = names; c.namesAt = Date.now(); }
+    if (rate !== c.rate) { c.rate = rate; c.rateAt = Date.now(); }
+    c.me = +me.value;
+    /* 請瀏覽器別在空間不足時清掉帳本 */
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
+    ledgerChanged();
+  });
+
+  /* 行程頁每天的側欄：今日花費＋記一筆 */
+  function daySpend(d) {
+    if (!ledgerReady()) return '<section class="aside spend"><h3 class="h-sub">記帳</h3><p>四人分帳，記在自己手機、用同步碼互傳。</p><div class="actions"><a class="btn btn--sm" href="#ledger">' + icon("wallet") + "開始設定</a></div></section>";
+    var its = allItems().filter(function (it) { return it.day === d.n; }), t = sumJ(its);
+    return '<section class="aside spend"><h3 class="h-sub">今日花費</h3><p class="spend__v"><b class="num">' + fmtJ(t) + '</b><span class="num">≈ ' + fmtT(t * L.cfg.rate) + "・" + its.length + " 筆</span></p>" +
+      '<div class="actions"><a class="btn btn--sm btn--day" href="#ledger/add/day' + d.n + '">' + icon("plus") + "記一筆</a></div></section>";
+  }
+
   /* ── 分頁切換 ───────────────────────── */
   function route() {
     var parts = location.hash.replace("#", "").split("/");
-    var tab = ["trip", "transport", "stay", "info"].indexOf(parts[0]) >= 0 ? parts[0] : "trip";
+    var tab = ["trip", "transport", "stay", "info", "ledger"].indexOf(parts[0]) >= 0 ? parts[0] : "trip";
     state.tab = tab;
     document.querySelectorAll(".view").forEach(function (v) { v.hidden = v.getAttribute("data-view") !== tab; });
     document.querySelectorAll(".tabs__item").forEach(function (a) {
       if (a.getAttribute("data-tab") === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
     if (tab === "trip" && /^day[1-8]$/.test(parts[1] || "") && +parts[1].slice(3) !== state.day) selectDay(+parts[1].slice(3));
+    /* 從行程頁點「記一筆」：#ledger/add/day3 直接打開表單，日期帶好 */
+    if (tab === "ledger" && parts[1] === "add") {
+      try { history.replaceState(null, "", "#ledger"); } catch (e) {}
+      window.scrollTo(0, 0);
+      if (ledgerReady()) openForm(/^day[1-8]$/.test(parts[2] || "") ? { day: +parts[2].slice(3) } : null);
+    }
     setGuide();
   }
 
-  renderTrip(); renderTransport(); renderStay(); renderInfo();
+  renderTrip(); renderTransport(); renderStay(); renderInfo(); renderLedger();
 
   $("#view-trip").addEventListener("click", function (e) {
     var b = e.target.closest(".days__btn"); if (b) selectDay(+b.getAttribute("data-day"));
