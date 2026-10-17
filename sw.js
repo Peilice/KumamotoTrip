@@ -1,6 +1,6 @@
 /* 離線快取：第一次開啟時把整個網站存到手機，之後沒有網路也能看。
    更新網站內容後，把 VERSION 改一個數字，手機下次連網時就會換成新版。 */
-var VERSION = "kyushu-2026-v24";
+var VERSION = "kyushu-2026-v25";
 var ASSETS = [
   "./", "index.html", "css/style.css", "js/data.js", "js/app.js",
   "fonts/zenmaru-900.woff", "fonts/zenmaru-700.woff", "fonts/fill-900.woff2", "fonts/fill-700.woff2", "manifest.webmanifest", "icon.svg", "icon-180.png", "icon-512.png",
@@ -14,7 +14,10 @@ var ASSETS = [
 ];
 
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); }));
+  /* cache: "reload" 略過瀏覽器的 HTTP 快取，避免新版快取存到舊檔 */
+  e.waitUntil(caches.open(VERSION).then(function (c) {
+    return c.addAll(ASSETS.map(function (u) { return new Request(u, { cache: "reload" }); }));
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener("activate", function (e) {
@@ -29,7 +32,7 @@ self.addEventListener("fetch", function (e) {
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
   e.respondWith(caches.open(VERSION).then(function (cache) {
     return cache.match(req, { ignoreSearch: true }).then(function (hit) {
-      var fresh = fetch(req).then(function (res) {
+      var fresh = fetch(req, { cache: "no-cache" }).then(function (res) {
         if (res && res.ok) cache.put(req, res.clone());
         return res;
       }).catch(function () { return hit || (req.mode === "navigate" ? cache.match("index.html") : undefined); });

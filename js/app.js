@@ -688,9 +688,14 @@
   }
   window.addEventListener("online", net); window.addEventListener("offline", net); net();
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    /* 網站有新版接手時自動重新整理；正在填表單就先不打斷，下次開啟再換 */
+    var hadSW = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      net();
+      if (hadSW && !document.querySelector("dialog[open]")) location.reload();
+    });
     navigator.serviceWorker.register("sw.js").then(function () {
       navigator.serviceWorker.ready.then(function () { $("#sw-status").textContent = "已儲存到這支手機，沒有網路也能開啟。"; net(); });
-      navigator.serviceWorker.addEventListener("controllerchange", net);
     }).catch(function () {});
   }
 })();
