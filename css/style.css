@@ -457,12 +457,12 @@ button.led__item:hover .led__note { text-decoration: underline; text-underline-o
   background: var(--white); color: var(--ink); box-shadow: 0 -8px 40px rgba(42, 38, 34, .18); overflow: auto; overscroll-behavior: contain; }
 .ledf::backdrop { background: rgba(42, 38, 34, .45); }
 @media (min-width: 600px) { .ledf { margin: auto; border-radius: var(--r-lg); } }
-.ledf__form { display: grid; gap: var(--s4); padding: var(--s3) var(--gutter) calc(var(--s4) + env(safe-area-inset-bottom)); }
+.ledf__form { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); padding: var(--s3) var(--gutter) calc(var(--s4) + env(safe-area-inset-bottom)); }
 .ledf__head { display: flex; align-items: center; justify-content: space-between; margin-right: -10px; }
 .ledf__head h2 { margin: 0; font: 900 20px/1.3 var(--round); }
 .ledf__x { width: 44px; height: 44px; border: 0; background: none; border-radius: 99px; font-size: 28px; line-height: 1; color: var(--g-600); cursor: pointer; }
 .ledf__amt { display: flex; gap: var(--s3); align-items: center; }
-.ledf__amt input { flex: 1; min-width: 0; min-height: 60px; padding: 4px 14px; font: 900 32px/1.2 var(--round); color: var(--ink);
+.ledf__amt input { flex: 1 1 0; width: 0; min-width: 0; min-height: 60px; padding: 4px 14px; font: 900 32px/1.2 var(--round); color: var(--ink);
   background: var(--g-50); border: 1.5px solid var(--g-200); border-radius: var(--r-md); }
 .ledf__amt .chips { flex-wrap: nowrap; }
 .ledf__err { margin: 0; min-height: 1.4em; color: #844536; font-weight: 700; font-size: 14px; }
