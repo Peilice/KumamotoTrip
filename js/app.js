@@ -232,7 +232,7 @@
 
     var dv = $("#dayview");
     dv.setAttribute("aria-labelledby", "tab-d" + d.n);
-    dv.innerHTML = head + '<div class="daygrid"><ol class="stops" aria-label="Day ' + d.n + ' 景點">' + items + '</ol><div class="daygrid__aside">' + aside + "</div></div>";
+    dv.innerHTML = head + '<div class="daygrid"><div class="daygrid__main">' + spendBar(d) + '<ol class="stops" aria-label="Day ' + d.n + ' 景點">' + items + '</ol></div><div class="daygrid__aside">' + aside + "</div></div>";
     applyDayColor();
     setGuide();
   }
@@ -630,12 +630,19 @@
     ledgerChanged();
   });
 
-  /* 行程頁每天的側欄：今日花費＋記一筆 */
-  function daySpend(d) {
-    if (!ledgerReady()) return '<section class="aside spend"><h3 class="h-sub">記帳</h3><p>四人分帳，記在自己手機、用同步碼互傳。</p><div class="actions"><a class="btn btn--sm" href="#ledger">' + icon("wallet") + "開始設定</a></div></section>";
+  /* 行程頁景點清單上方的記帳列：點進當天就能記一筆，不必滑到底 */
+  function spendBar(d) {
+    if (!ledgerReady()) return '<div class="spendbar"><p class="spendbar__t">四人分帳，記在自己手機、用同步碼互傳。</p><a class="btn btn--sm" href="#ledger">' + icon("wallet") + "開始設定</a></div>";
     var its = allItems().filter(function (it) { return it.day === d.n; }), t = sumJ(its);
-    return '<section class="aside spend"><h3 class="h-sub">今日花費</h3><p class="spend__v"><b class="num">' + fmtJ(t) + '</b><span class="num">≈ ' + fmtT(t * L.cfg.rate) + "・" + its.length + " 筆</span></p>" +
-      '<div class="actions"><a class="btn btn--sm btn--day" href="#ledger/add/day' + d.n + '">' + icon("plus") + "記一筆</a></div></section>";
+    return '<div class="spendbar"><p class="spendbar__t">今日 <b class="num">' + fmtJ(t) + '</b><span class="num">' + its.length + " 筆</span></p>" +
+      '<a class="btn btn--sm btn--day" href="#ledger/add/day' + d.n + '">' + icon("plus") + "記一筆</a></div>";
+  }
+
+  /* 行程頁每天的側欄：今日花費明細（換算台幣） */
+  function daySpend(d) {
+    if (!ledgerReady()) return "";
+    var its = allItems().filter(function (it) { return it.day === d.n; }), t = sumJ(its);
+    return '<section class="aside spend"><h3 class="h-sub">今日花費</h3><p class="spend__v"><b class="num">' + fmtJ(t) + '</b><span class="num">≈ ' + fmtT(t * L.cfg.rate) + "・" + its.length + " 筆</span></p></section>";
   }
 
   /* ── 分頁切換 ───────────────────────── */

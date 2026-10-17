@@ -478,7 +478,12 @@ button.led__item:hover .led__note { text-decoration: underline; text-underline-o
 .spend .spend__v { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0; }
 .spend__v b { font: 900 26px/1.2 var(--round); color: var(--day); }
 .spend__v span { font-size: 13.5px; color: var(--g-600); }
-.spend .actions { margin-top: var(--s2); }
+
+/* 行程頁景點清單上方：記帳列 */
+.spendbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s4); }
+.spendbar__t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0; font-size: 13.5px; color: var(--g-600); }
+.spendbar__t b { font: 900 20px/1.2 var(--round); color: var(--day); }
+.spendbar .btn { flex: none; }
 
 .foot { max-width: var(--max); margin: 0 auto; padding: var(--s5) var(--gutter) var(--s6); color: var(--g-600); font-size: 12.5px; border-top: 1px solid var(--g-200); }
 .foot p { margin: 0 0 4px; max-width: none; }
