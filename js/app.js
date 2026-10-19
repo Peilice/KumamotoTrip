@@ -417,11 +417,17 @@
     if (!window.CompressionStream) return Promise.resolve("KY26." + toB64(u));
     return pipe(u, new CompressionStream("deflate-raw")).then(function (z) { return "KY26z." + toB64(z); });
   }
+  /* 同步連結：同步碼放在網址 # 後面（不會傳到伺服器），換成網址安全的 base64；
+     openExternalBrowser=1 讓 LINE 改用手機的瀏覽器開，帳才會存進平常用的那個瀏覽器 */
+  function syncLink(code) {
+    return location.origin + location.pathname + "?openExternalBrowser=1#sync/" + code.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
   function decodeSync(text) {
     return Promise.resolve().then(function () {
-      var m = /KY26(z?)\.([A-Za-z0-9+\/=]+)/.exec(text.replace(/\s+/g, ""));
+      var m = /KY26(z?)\.([A-Za-z0-9+\/=_-]+)/.exec(text.replace(/\s+/g, ""));
       if (!m) throw zhErr("找不到同步碼，請確認有完整複製");
-      var u = fromB64(m[2]);
+      var b = m[2].replace(/=+$/, "").replace(/-/g, "+").replace(/_/g, "/");
+      var u = fromB64(b + "===".slice((b.length + 3) % 4));
       if (!m[1]) return u;
       if (!window.DecompressionStream) throw zhErr("這支手機的瀏覽器太舊，讀不了同步碼，請先更新系統");
       return pipe(u, new DecompressionStream("deflate-raw"));
@@ -465,7 +471,7 @@
       '<div class="actions"><button class="btn btn--day" type="submit">' + submit + "</button></div></form>";
   }
   function syncBox() {
-    return '<label class="fld"><span>貼上旅伴的同步碼</span><textarea class="note" id="ld-in" rows="3" placeholder="KY26…"></textarea></label>' +
+    return '<label class="fld"><span>連結打不開時，把旅伴傳來的整段訊息貼在這裡</span><textarea class="note" id="ld-in" rows="3" placeholder="KY26…"></textarea></label>' +
       '<div class="actions"><button class="btn" type="button" data-act="import">合併</button></div>' +
       '<p class="ledmsg" id="ld-msg" aria-live="polite"></p>';
   }
@@ -520,8 +526,8 @@
       return "<li><b>" + esc(nm) + (i === me ? "（我）" : "") + "</b>" + (bk && bk.at ? '<span class="num">' + bk.items.length + " 筆・" +
         new Date(bk.at).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }) + "</span>" : "還沒同步進來") + "</li>";
     }).join("") + "</ul>";
-    var sync = '<h2 class="h-sec">同步</h2><div class="ledsync"><p>每個人記的帳只存在自己的手機。把同步碼傳到群組，旅伴貼上就會合併；同步碼也會帶上你手上其他人的帳，所以只要有人轉傳，大家都會收到。</p>' + who +
-      '<div class="actions"><button class="btn btn--day" type="button" data-act="share">' + icon("share") + "分享同步碼</button></div>" +
+    var sync = '<h2 class="h-sec">同步</h2><div class="ledsync"><p>每個人記的帳只存在自己的手機。把同步連結傳到群組，旅伴點一下就會合併；同步碼也會帶上你手上其他人的帳，所以只要有人轉傳，大家都會收到。</p>' + who +
+      '<div class="actions"><button class="btn btn--day" type="button" data-act="share">' + icon("share") + "分享同步連結</button></div>" +
       '<textarea class="note" id="ld-out" rows="3" readonly hidden aria-label="同步碼"></textarea>' + syncBox() + "</div>" +
       '<details class="slot"><summary>' + icon("wallet") + "設定：名字、我是誰、匯率" + icon("chev", "chev") + "</summary>" + cfgForm("儲存設定") + "</details>";
 
@@ -588,6 +594,13 @@
   });
 
   function ledMsg(t) { var m = $("#ld-msg"); if (m) m.textContent = t; }
+  function importSync(text) {
+    return decodeSync(text).then(function (d) {
+      var got = mergeSync(d);
+      renderLedger(); renderDay();
+      ledMsg(got ? "已合併 " + got + " 本帳" + (ledgerReady() ? "" : "，請在上面選出哪一位是你") : "已經是最新的，沒有新資料");
+    }).catch(function (er) { ledMsg(er.zh ? er.message : "同步碼讀不出來，請確認有完整複製"); });
+  }
   $("#view-ledger").addEventListener("click", function (e) {
     var ed = e.target.closest("[data-edit]"), pr = e.target.closest("[data-pre]"), a = e.target.closest("[data-act]");
     if (ed) {
@@ -599,20 +612,14 @@
     } else if (a && a.getAttribute("data-act") === "add") openForm();
     else if (a && a.getAttribute("data-act") === "share") {
       encodeSync().then(function (code) {
-        var text = "九州記帳同步碼（到行程網站「記帳」頁貼上）\n" + code;
+        var text = "九州記帳同步（點連結就會自動合併）\n" + syncLink(code);
         if (navigator.share) return navigator.share({ text: text }).catch(function () {});
         return navigator.clipboard.writeText(text).then(function () { ledMsg("已複製，貼到群組就好"); });
       }).catch(function () {
-        /* 不能分享也不能複製時，直接把同步碼攤出來讓人手動複製 */
-        encodeSync().then(function (code) { var o = $("#ld-out"); o.value = code; o.hidden = false; o.select(); ledMsg("請長按上面的同步碼手動複製"); });
+        /* 不能分享也不能複製時，直接把連結攤出來讓人手動複製 */
+        encodeSync().then(function (code) { var o = $("#ld-out"); o.value = syncLink(code); o.hidden = false; o.select(); ledMsg("請長按上面的連結手動複製"); });
       });
-    } else if (a && a.getAttribute("data-act") === "import") {
-      decodeSync($("#ld-in").value).then(function (d) {
-        var got = mergeSync(d);
-        renderLedger(); renderDay();
-        ledMsg(got ? "已合併 " + got + " 本帳" : "已經是最新的，沒有新資料");
-      }).catch(function (er) { ledMsg(er.zh ? er.message : "同步碼讀不出來，請確認有完整複製"); });
-    }
+    } else if (a && a.getAttribute("data-act") === "import") importSync($("#ld-in").value);
   });
   $("#view-ledger").addEventListener("submit", function (e) {
     if (e.target.id !== "ld-cfg") return;
@@ -648,6 +655,12 @@
   /* ── 分頁切換 ───────────────────────── */
   function route() {
     var parts = location.hash.replace("#", "").split("/");
+    /* 點旅伴傳來的同步連結：#sync/KY26z.… 直接合併，再停在記帳頁 */
+    if (parts[0] === "sync") {
+      try { history.replaceState(null, "", location.pathname + "#ledger"); } catch (e) {}
+      importSync(parts.slice(1).join("/"));
+      parts = ["ledger"];
+    }
     var tab = ["trip", "transport", "stay", "info", "ledger"].indexOf(parts[0]) >= 0 ? parts[0] : "trip";
     state.tab = tab;
     document.querySelectorAll(".view").forEach(function (v) { v.hidden = v.getAttribute("data-view") !== tab; });
