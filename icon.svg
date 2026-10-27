@@ -1,13 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 九州自駕行程圖示：阿蘇火山＋溫泉蒸氣＋山腳彎路。主要圖形都在中央 80% 安全區內（maskable） -->
   <rect width="512" height="512" fill="#FAF8F5"/>
-  <g transform="translate(76 116)">
-    <rect x="0" y="0" width="74" height="120" rx="18" fill="#5F7036"/>
-    <rect x="94" y="0" width="74" height="120" rx="18" fill="#6E7A3A"/>
-    <rect x="188" y="0" width="74" height="120" rx="18" fill="#7D7436"/>
-    <rect x="282" y="0" width="74" height="120" rx="18" fill="#8F6936"/>
-    <rect x="0" y="160" width="74" height="120" rx="18" fill="#8E5534"/>
-    <rect x="94" y="160" width="74" height="120" rx="18" fill="#844536"/>
-    <rect x="188" y="160" width="74" height="120" rx="18" fill="#74393F"/>
-    <rect x="282" y="160" width="74" height="120" rx="18" fill="#5C3B50"/>
+  <circle cx="256" cy="214" r="124" fill="#C8733E"/>
+  <!-- 阿蘇：寬緩的平頂火山，火口微凹 -->
+  <path d="M0 404 C86 380 150 318 196 262 Q206 250 222 252 L290 252 Q306 250 316 262 C362 318 426 380 512 404 L512 512 L0 512 Z" fill="#4F5E2C"/>
+  <path d="M222 252 Q256 266 290 252" fill="none" stroke="#3B4720" stroke-width="8" stroke-linecap="round"/>
+  <!-- 溫泉記號般的三道蒸氣 -->
+  <g fill="none" stroke="#FAF8F5" stroke-width="15" stroke-linecap="round">
+    <path d="M226 236 c-14 -18 14 -30 0 -48 c-14 -18 14 -30 0 -48"/>
+    <path d="M256 230 c-14 -18 14 -30 0 -48 c-14 -18 14 -30 0 -48 c-10 -13 6 -22 2 -30"/>
+    <path d="M286 236 c-14 -18 14 -30 0 -48 c-14 -18 14 -30 0 -48"/>
   </g>
+  <!-- 山腳的自駕彎路 -->
+  <path d="M318 512 C318 456 196 452 214 396 C224 366 268 352 300 340" fill="none" stroke="#E8E2D8" stroke-width="30" stroke-linecap="round"/>
+  <path d="M318 512 C318 456 196 452 214 396 C224 366 268 352 300 340" fill="none" stroke="#4F5E2C" stroke-width="4" stroke-dasharray="14 14" stroke-linecap="round"/>
 </svg>
