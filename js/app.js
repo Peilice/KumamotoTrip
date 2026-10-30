@@ -111,7 +111,7 @@
   });
 
   function bookingFacts(k, b) {
-    /* 長輩版不列金額與付款 */
+    /* 長輩版不列金額與付款（租車也一樣） */
     var money = LITE ? [] : [["金額", b.price ? '<span class="num">' + esc(b.price) + "</span>" : val("")], ["付款", val(b.paid)]];
     return facts([["訂房編號", val(b.no)], ["房型", val(b.room)]].concat(money, [noteRow("hotel-" + k, b.note)]), "facts--grid");
   }
@@ -279,8 +279,8 @@
       '<div class="flight__leg">' + rentEnd("取車", r.pickupTime, r.pickupPlace) +
       '<div class="flight__mid">' + icon("car") + "</div>" + rentEnd("還車", r.returnTime, r.returnPlace, true) + "</div>" +
       '<div class="rent__body">' +
-      facts([["預約編號", val(r.bookingNo)], ["車型", val(r.car)], ["保險", val(r.insurance)], ["ETC", val(r.etc)],
-        ["金額", r.price ? '<span class="num">' + esc(r.price) + "</span>" : val("")], noteRow("rental", r.note)], "facts--grid") +
+      facts([["預約編號", val(r.bookingNo)], ["車型", val(r.car)], ["保險", val(r.insurance)], ["ETC", val(r.etc)]]
+        .concat(LITE ? [] : [["金額", r.price ? '<span class="num">' + esc(r.price) + "</span>" : val("")]], [noteRow("rental", r.note)]), "facts--grid") +
       '<p class="hint">標示「待填」的欄位，補上後會顯示在這裡。</p></div></article>';
   }
 
