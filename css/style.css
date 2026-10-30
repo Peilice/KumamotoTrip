@@ -277,6 +277,7 @@ summary.stop__head:hover .stop__name { color: var(--day); }
 .slot .facts { padding: var(--s2) 0 var(--s1); }
 
 .aside { margin-top: var(--s5); }
+.aside + .lodge { margin-top: var(--s5); }
 .aside p { color: var(--g-800); font-size: 15px; line-height: 1.85; margin: 0 0 var(--s3); }
 .more > summary { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font: 700 15px/1 var(--round); color: var(--day); }
 
