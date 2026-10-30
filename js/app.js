@@ -1,6 +1,8 @@
 (function () {
   "use strict";
   var T = window.TRIP;
+  /* 長輩版（lite.html）：不顯示記帳，行程頁也不出現花費 */
+  var LITE = document.documentElement.getAttribute("data-mode") === "lite";
 
   /* 地圖搜尋用的日文名稱 */
   var JP = {
@@ -477,6 +479,7 @@
   }
 
   function renderLedger() {
+    if (LITE) return;
     var v = $("#view-ledger");
     if (!ledgerReady()) {
       v.innerHTML = '<h2 class="h-sec">記帳</h2><section class="ledsum"><p class="ledsum__k">四人分帳，先設定一次</p>' + cfgForm("開始記帳") + "</section>" +
@@ -639,6 +642,7 @@
 
   /* 行程頁景點清單上方的記帳列：點進當天就能記一筆，不必滑到底 */
   function spendBar(d) {
+    if (LITE) return "";
     if (!ledgerReady()) return '<div class="spendbar"><p class="spendbar__t">四人分帳，記在自己手機、用同步碼互傳。</p><a class="btn btn--sm" href="#ledger">' + icon("wallet") + "開始設定</a></div>";
     var its = allItems().filter(function (it) { return it.day === d.n; }), t = sumJ(its);
     return '<div class="spendbar"><p class="spendbar__t">今日 <b class="num">' + fmtJ(t) + '</b><span class="num">' + its.length + " 筆</span></p>" +
@@ -647,6 +651,7 @@
 
   /* 行程頁每天的側欄：今日花費明細（換算台幣） */
   function daySpend(d) {
+    if (LITE) return "";
     if (!ledgerReady()) return "";
     var its = allItems().filter(function (it) { return it.day === d.n; }), t = sumJ(its);
     return '<section class="aside spend"><h3 class="h-sub">今日花費</h3><p class="spend__v"><b class="num">' + fmtJ(t) + '</b><span class="num">≈ ' + fmtT(t * L.cfg.rate) + "・" + its.length + " 筆</span></p></section>";
@@ -656,12 +661,12 @@
   function route() {
     var parts = location.hash.replace("#", "").split("/");
     /* 點旅伴傳來的同步連結：#sync/KY26z.… 直接合併，再停在記帳頁 */
-    if (parts[0] === "sync") {
+    if (parts[0] === "sync" && !LITE) {
       try { history.replaceState(null, "", location.pathname + "#ledger"); } catch (e) {}
       importSync(parts.slice(1).join("/"));
       parts = ["ledger"];
     }
-    var tab = ["trip", "transport", "stay", "info", "ledger"].indexOf(parts[0]) >= 0 ? parts[0] : "trip";
+    var tab = ["trip", "transport", "stay", "info"].concat(LITE ? [] : ["ledger"]).indexOf(parts[0]) >= 0 ? parts[0] : "trip";
     state.tab = tab;
     document.querySelectorAll(".view").forEach(function (v) { v.hidden = v.getAttribute("data-view") !== tab; });
     document.querySelectorAll(".tabs__item").forEach(function (a) {
