@@ -226,8 +226,8 @@
     var items = d.stops.map(function (s) { if (!s.kind) num++; return stopHtml(d, s, s.kind ? 0 : num); }).join("");
 
     var aside = "";
-    if (d.hotel) aside += lodgeBlock(d.hotel, { desc: false });
     if (d.n === 1 || d.n === 8) aside += '<section class="aside"><h3 class="h-sub">今日航班</h3>' + flightHtml(T.flights[d.n === 1 ? 0 : 1]) + "</section>";
+    if (d.hotel) aside += lodgeBlock(d.hotel, { desc: false });
     aside += daySpend(d);
     if (d.intro) aside += '<section class="aside"><h3 class="h-sub">' + esc(d.intro.title) + "</h3>" + d.intro.text.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</section>";
     if (d.reading) aside += '<section class="aside"><h3 class="h-sub">' + esc(d.reading.title) + "</h3><p>" + esc(d.reading.text[0]) + "</p>" +

@@ -1,6 +1,6 @@
 /* 離線快取：第一次開啟時把整個網站存到手機，之後沒有網路也能看。
    更新網站內容後，把 VERSION 改一個數字，手機下次連網時就會換成新版。 */
-var VERSION = "kyushu-2026-v35";
+var VERSION = "kyushu-2026-v36";
 var ASSETS = [
   "./", "index.html", "lite.html", "css/style.css", "js/data.js", "js/app.js",
   "fonts/zenmaru-900.woff", "fonts/zenmaru-700.woff", "fonts/fill-900.woff2", "fonts/fill-700.woff2", "manifest.webmanifest", "manifest-lite.webmanifest", "icon-180.png", "icon-512.png",
