@@ -111,8 +111,9 @@
   });
 
   function bookingFacts(k, b) {
-    return facts([["訂房編號", val(b.no)], ["房型", val(b.room)], ["金額", b.price ? '<span class="num">' + esc(b.price) + "</span>" : val("")], ["付款", val(b.paid)],
-      noteRow("hotel-" + k, b.note)], "facts--grid");
+    /* 長輩版不列金額與付款 */
+    var money = LITE ? [] : [["金額", b.price ? '<span class="num">' + esc(b.price) + "</span>" : val("")], ["付款", val(b.paid)]];
+    return facts([["訂房編號", val(b.no)], ["房型", val(b.room)]].concat(money, [noteRow("hotel-" + k, b.note)]), "facts--grid");
   }
   /* 全程 7 晚排成一條色階，這間飯店住的那幾晚填上當天的日色 */
   function nightsStrip(h) {
