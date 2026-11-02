@@ -293,7 +293,17 @@
 
   /* ── 資訊 ───────────────────────────── */
   var CK = "kyushu2026-checklist";
-  function loadChecks() { try { return JSON.parse(localStorage.getItem(CK)) || {}; } catch (e) { return {}; } }
+  /* 勾選以「分類名稱-項目序號」記錄，分類調整順序也不會錯位；舊版以分類序號記錄，讀取時轉換 */
+  var CK_OLD_GROUPS = ["重要證件", "衣物與用品", "常備藥品", "其他", "行前準備"];
+  function loadChecks() {
+    var o;
+    try { o = JSON.parse(localStorage.getItem(CK)) || {}; } catch (e) { return {}; }
+    Object.keys(o).forEach(function (k) {
+      var m = /^c(\d+)-(\d+)$/.exec(k); if (!m) return;
+      delete o[k]; if (CK_OLD_GROUPS[m[1]]) o[CK_OLD_GROUPS[m[1]] + "-" + m[2]] = 1;
+    });
+    return o;
+  }
   function saveChecks(o) { try { localStorage.setItem(CK, JSON.stringify(o)); } catch (e) {} }
 
   function renderInfo() {
@@ -310,9 +320,9 @@
       return '<section class="food__col" style="--c:' + DAYC[[1, 3, 5, 7][i]].chip + '"><h3 class="food__area">' + esc(a.area) + "</h3><ul>" +
         a.items.map(function (it) { return "<li><b>" + esc(it[0]) + "</b><span>" + esc(it[1]) + "</span></li>"; }).join("") + "</ul></section>";
     }).join("");
-    var groups = T.checklist.map(function (g, gi) {
+    var groups = T.checklist.map(function (g) {
       return '<section class="check__group"><h3>' + esc(g.group) + '</h3><ul class="check__list">' + g.items.map(function (it, ii) {
-        total++; var id = "c" + gi + "-" + ii;
+        total++; var id = g.group + "-" + ii;
         return '<li><label><input type="checkbox" data-ck="' + id + '"' + (checks[id] ? " checked" : "") + "><span>" + esc(it) + "</span></label></li>";
       }).join("") + "</ul></section>";
     }).join("");
